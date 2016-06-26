@@ -32,9 +32,12 @@ searchFeed query =
                 ++ "+language:elm&sort=stars&order=desc"
 
         -- Hint: responseDecoder may be useful here
+        task : Task Http.Error (List SearchResult)
         task =
-            "TODO replace this String with a Task using http://package.elm-lang.org/packages/evancz/elm-http/3.0.0/Http#get"
+            Http.get responseDecoder url
+           
     in
+        Task.perform  HandleSearchError HandleSearchResponse task
         -- TODO replace this Cmd.none with a call to Task.perform
         -- http://package.elm-lang.org/packages/elm-lang/core/4.0.1/Task#perform
         --
@@ -43,7 +46,6 @@ searchFeed query =
         -- task
         -- HandleSearchResponse
         -- HandleSearchError
-        Cmd.none
 
 
 responseDecoder : Decoder (List SearchResult)

@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.App
 import Html.Attributes exposing (class, target, href, property, defaultValue)
 import Html.Events exposing (..)
-import Json.Decode exposing (Decoder)
+import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
 
 
@@ -72,9 +72,9 @@ searchResultDecoder =
     -- and http://package.elm-lang.org/packages/NoRedInk/elm-decode-pipeline/latest
     -- TODO replace these calls to `hardcoded` with calls to `require`
     decode SearchResult
-        |> hardcoded 0
-        |> hardcoded ""
-        |> hardcoded 0
+        |> required "id" int
+        |> required "full_name" string
+        |> required "stargazers_count" int
 
 
 type alias Model =
@@ -103,13 +103,18 @@ initialModel =
 
 decodeResults : String -> List SearchResult
 decodeResults json =
+    case decodeString responseDecoder json of
+        Ok searchResults  ->
+            searchResults
+        Err error -> []
+
     -- TODO use Json.Decode.decodeString to translate this into either:
     --
     -- * the search results, if decoding succeeded
     -- * an empty list if decoding failed
     --
     -- see http://package.elm-lang.org/packages/elm-lang/core/4.0.0/Json-Decode#decodeString
-    []
+    
 
 
 view : Model -> Html Msg

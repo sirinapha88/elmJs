@@ -24,15 +24,7 @@ var _rtfeldman$elm_workshop$Main$update = F2(
 					{results: newResults});
 		}
 	});
-var _rtfeldman$elm_workshop$Main$decodeResults = function (json) {
-	return _elm_lang$core$Native_List.fromArray(
-		[]);
-};
 var _rtfeldman$elm_workshop$Main$sampleJson = '\n    {\n    \"total_count\": 40,\n    \"incomplete_results\": false,\n    \"items\": [\n      {\n        \"id\": 3081286,\n        \"name\": \"Tetris\",\n        \"full_name\": \"dtrupenn/Tetris\",\n        \"owner\": {\n          \"login\": \"dtrupenn\",\n          \"id\": 872147,\n          \"avatar_url\": \"https://secure.gravatar.com/avatar/e7956084e75f239de85d3a31bc172ace?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png\",\n          \"gravatar_id\": \"\",\n          \"url\": \"https://api.github.com/users/dtrupenn\",\n          \"received_events_url\": \"https://api.github.com/users/dtrupenn/received_events\",\n          \"type\": \"User\"\n        },\n        \"private\": false,\n        \"html_url\": \"https://github.com/dtrupenn/Tetris\",\n        \"description\": \"A C implementation of Tetris using Pennsim through LC4\",\n        \"fork\": false,\n        \"url\": \"https://api.github.com/repos/dtrupenn/Tetris\",\n        \"created_at\": \"2012-01-01T00:31:50Z\",\n        \"updated_at\": \"2013-01-05T17:58:47Z\",\n        \"pushed_at\": \"2012-01-01T00:37:02Z\",\n        \"homepage\": \"\",\n        \"size\": 524,\n        \"stargazers_count\": 1,\n        \"watchers_count\": 1,\n        \"language\": \"Assembly\",\n        \"forks_count\": 0,\n        \"open_issues_count\": 0,\n        \"master_branch\": \"master\",\n        \"default_branch\": \"master\",\n        \"score\": 10.309712\n      }\n    ]\n  }\n  ';
-var _rtfeldman$elm_workshop$Main$initialModel = {
-	query: 'tutorial',
-	results: _rtfeldman$elm_workshop$Main$decodeResults(_rtfeldman$elm_workshop$Main$sampleJson)
-};
 var _rtfeldman$elm_workshop$Main$Model = F2(
 	function (a, b) {
 		return {query: a, results: b};
@@ -41,21 +33,37 @@ var _rtfeldman$elm_workshop$Main$SearchResult = F3(
 	function (a, b, c) {
 		return {id: a, name: b, stars: c};
 	});
-var _rtfeldman$elm_workshop$Main$searchResultDecoder = A2(
-	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
-	0,
-	A2(
-		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
-		'',
-		A2(
-			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
-			0,
+var _rtfeldman$elm_workshop$Main$searchResultDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'stargazers_count',
+	_elm_lang$core$Json_Decode$int,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'full_name',
+		_elm_lang$core$Json_Decode$string,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'id',
+			_elm_lang$core$Json_Decode$int,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_rtfeldman$elm_workshop$Main$SearchResult))));
 var _rtfeldman$elm_workshop$Main$responseDecoder = A2(
 	_elm_lang$core$Json_Decode$at,
 	_elm_lang$core$Native_List.fromArray(
 		['items']),
 	_elm_lang$core$Json_Decode$list(_rtfeldman$elm_workshop$Main$searchResultDecoder));
+var _rtfeldman$elm_workshop$Main$decodeResults = function (json) {
+	var _p3 = A2(_elm_lang$core$Json_Decode$decodeString, _rtfeldman$elm_workshop$Main$responseDecoder, json);
+	if (_p3.ctor === 'Ok') {
+		return _p3._0;
+	} else {
+		return _elm_lang$core$Native_List.fromArray(
+			[]);
+	}
+};
+var _rtfeldman$elm_workshop$Main$initialModel = {
+	query: 'tutorial',
+	results: _rtfeldman$elm_workshop$Main$decodeResults(_rtfeldman$elm_workshop$Main$sampleJson)
+};
 var _rtfeldman$elm_workshop$Main$SetResults = function (a) {
 	return {ctor: 'SetResults', _0: a};
 };
