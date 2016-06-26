@@ -1,0 +1,178 @@
+var _rtfeldman$elm_workshop$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'SetQuery':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{query: _p0._0});
+			case 'SetResults':
+				var newModel = _elm_lang$core$Native_Utils.update(
+					model,
+					{results: _p0._0});
+				return newModel;
+			default:
+				var newResults = A2(
+					_elm_lang$core$List$filter,
+					function (_p1) {
+						var _p2 = _p1;
+						return !_elm_lang$core$Native_Utils.eq(_p2.id, _p0._0);
+					},
+					model.results);
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{results: newResults});
+		}
+	});
+var _rtfeldman$elm_workshop$Main$decodeResults = function (json) {
+	return _elm_lang$core$Native_List.fromArray(
+		[]);
+};
+var _rtfeldman$elm_workshop$Main$sampleJson = '\n    {\n    \"total_count\": 40,\n    \"incomplete_results\": false,\n    \"items\": [\n      {\n        \"id\": 3081286,\n        \"name\": \"Tetris\",\n        \"full_name\": \"dtrupenn/Tetris\",\n        \"owner\": {\n          \"login\": \"dtrupenn\",\n          \"id\": 872147,\n          \"avatar_url\": \"https://secure.gravatar.com/avatar/e7956084e75f239de85d3a31bc172ace?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png\",\n          \"gravatar_id\": \"\",\n          \"url\": \"https://api.github.com/users/dtrupenn\",\n          \"received_events_url\": \"https://api.github.com/users/dtrupenn/received_events\",\n          \"type\": \"User\"\n        },\n        \"private\": false,\n        \"html_url\": \"https://github.com/dtrupenn/Tetris\",\n        \"description\": \"A C implementation of Tetris using Pennsim through LC4\",\n        \"fork\": false,\n        \"url\": \"https://api.github.com/repos/dtrupenn/Tetris\",\n        \"created_at\": \"2012-01-01T00:31:50Z\",\n        \"updated_at\": \"2013-01-05T17:58:47Z\",\n        \"pushed_at\": \"2012-01-01T00:37:02Z\",\n        \"homepage\": \"\",\n        \"size\": 524,\n        \"stargazers_count\": 1,\n        \"watchers_count\": 1,\n        \"language\": \"Assembly\",\n        \"forks_count\": 0,\n        \"open_issues_count\": 0,\n        \"master_branch\": \"master\",\n        \"default_branch\": \"master\",\n        \"score\": 10.309712\n      }\n    ]\n  }\n  ';
+var _rtfeldman$elm_workshop$Main$initialModel = {
+	query: 'tutorial',
+	results: _rtfeldman$elm_workshop$Main$decodeResults(_rtfeldman$elm_workshop$Main$sampleJson)
+};
+var _rtfeldman$elm_workshop$Main$Model = F2(
+	function (a, b) {
+		return {query: a, results: b};
+	});
+var _rtfeldman$elm_workshop$Main$SearchResult = F3(
+	function (a, b, c) {
+		return {id: a, name: b, stars: c};
+	});
+var _rtfeldman$elm_workshop$Main$searchResultDecoder = A2(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
+	0,
+	A2(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
+		'',
+		A2(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
+			0,
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_rtfeldman$elm_workshop$Main$SearchResult))));
+var _rtfeldman$elm_workshop$Main$responseDecoder = A2(
+	_elm_lang$core$Json_Decode$at,
+	_elm_lang$core$Native_List.fromArray(
+		['items']),
+	_elm_lang$core$Json_Decode$list(_rtfeldman$elm_workshop$Main$searchResultDecoder));
+var _rtfeldman$elm_workshop$Main$SetResults = function (a) {
+	return {ctor: 'SetResults', _0: a};
+};
+var _rtfeldman$elm_workshop$Main$DeleteById = function (a) {
+	return {ctor: 'DeleteById', _0: a};
+};
+var _rtfeldman$elm_workshop$Main$viewSearchResult = function (result) {
+	return A2(
+		_elm_lang$html$Html$li,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('star-count')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(result.stars))
+					])),
+				A2(
+				_elm_lang$html$Html$a,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$href(
+						A2(_elm_lang$core$Basics_ops['++'], 'https://github.com/', result.name)),
+						_elm_lang$html$Html_Attributes$target('_blank')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(result.name)
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('hide-result'),
+						_elm_lang$html$Html_Events$onClick(
+						_rtfeldman$elm_workshop$Main$DeleteById(result.id))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('X')
+					]))
+			]));
+};
+var _rtfeldman$elm_workshop$Main$SetQuery = function (a) {
+	return {ctor: 'SetQuery', _0: a};
+};
+var _rtfeldman$elm_workshop$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('content')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$header,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h1,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('ElmHub')
+							])),
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('tagline')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('“Like GitHub, but for Elm things.”')
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('search-query'),
+						_elm_lang$html$Html_Events$onInput(_rtfeldman$elm_workshop$Main$SetQuery),
+						_elm_lang$html$Html_Attributes$defaultValue(model.query)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('search-button')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Search')
+					])),
+				A2(
+				_elm_lang$html$Html$ul,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('results')
+					]),
+				A2(_elm_lang$core$List$map, _rtfeldman$elm_workshop$Main$viewSearchResult, model.results))
+			]));
+};
+var _rtfeldman$elm_workshop$Main$main = {
+	main: _elm_lang$html$Html_App$beginnerProgram(
+		{view: _rtfeldman$elm_workshop$Main$view, update: _rtfeldman$elm_workshop$Main$update, model: _rtfeldman$elm_workshop$Main$initialModel})
+};

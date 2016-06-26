@@ -1,0 +1,119 @@
+var _rtfeldman$elm_workshop$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'ItWorked') {
+			return {
+				ctor: '_Tuple2',
+				_0: {status: 'You\'re all set!'},
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			var status = function () {
+				var _p1 = _p0._0;
+				switch (_p1.ctor) {
+					case 'Timeout':
+						return 'Timed out trying to contact GitHub. Check your Internet connection?';
+					case 'NetworkError':
+						return 'Network error. Check your Internet connection?';
+					case 'UnexpectedPayload':
+						return A2(_elm_lang$core$Basics_ops['++'], 'Something is misconfigured: ', _p1._0);
+					default:
+						var _p3 = _p1._0;
+						var _p2 = _p3;
+						if (_p2 === 401) {
+							return 'Auth.elm does not have a valid token. :( Try recreating Auth.elm by following the steps in the README under the section “Create a GitHub Personal Access Token”.';
+						} else {
+							return A2(
+								_elm_lang$core$Basics_ops['++'],
+								'GitHub\'s Search API returned an error: ',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(_p3),
+									A2(_elm_lang$core$Basics_ops['++'], ' ', _p1._1)));
+						}
+				}
+			}();
+			return {
+				ctor: '_Tuple2',
+				_0: {status: status},
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		}
+	});
+var _rtfeldman$elm_workshop$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('content')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$header,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h1,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Elm Workshop')
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'font-size', _1: '48px'},
+								{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+								{ctor: '_Tuple2', _0: 'padding', _1: '48px'}
+							]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(model.status)
+					]))
+			]));
+};
+var _rtfeldman$elm_workshop$Main$initialModel = {status: 'Verifying setup...'};
+var _rtfeldman$elm_workshop$Main$Model = function (a) {
+	return {status: a};
+};
+var _rtfeldman$elm_workshop$Main$ItFailed = function (a) {
+	return {ctor: 'ItFailed', _0: a};
+};
+var _rtfeldman$elm_workshop$Main$ItWorked = {ctor: 'ItWorked'};
+var _rtfeldman$elm_workshop$Main$searchFeed = A3(
+	_elm_lang$core$Task$perform,
+	_rtfeldman$elm_workshop$Main$ItFailed,
+	function (_p4) {
+		return _rtfeldman$elm_workshop$Main$ItWorked;
+	},
+	A2(
+		_evancz$elm_http$Http$get,
+		_elm_lang$core$Json_Decode$succeed(''),
+		A2(
+			F2(
+				function (x, y) {
+					return A2(_elm_lang$core$Basics_ops['++'], x, y);
+				}),
+			'https://api.github.com/search/repositories?q=test&access_token=',
+			_rtfeldman$elm_workshop$Auth$token)));
+var _rtfeldman$elm_workshop$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{
+			view: _rtfeldman$elm_workshop$Main$view,
+			update: _rtfeldman$elm_workshop$Main$update,
+			init: {ctor: '_Tuple2', _0: _rtfeldman$elm_workshop$Main$initialModel, _1: _rtfeldman$elm_workshop$Main$searchFeed},
+			subscriptions: function (_p5) {
+				return _elm_lang$core$Platform_Sub$none;
+			}
+		})
+};

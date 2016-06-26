@@ -1,0 +1,81 @@
+var _rtfeldman$elm_workshop$Main$elmHubHeader = A2(
+	_elm_lang$html$Html$header,
+	_elm_lang$core$Native_List.fromArray(
+		[]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$h1,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('ElmHub')
+				])),
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$class('tagline')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('“Like GitHub, but for Elm things.”')
+				]))
+		]));
+var _rtfeldman$elm_workshop$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('content')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_rtfeldman$elm_workshop$Main$elmHubHeader,
+				A2(
+				_elm_lang$html$Html$ul,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('results')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$li,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$span,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('star-count')
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(
+										_elm_lang$core$Basics$toString(model.result.stars))
+									])),
+								A2(
+								_elm_lang$html$Html$a,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$href(
+										A2(_elm_lang$core$Basics_ops['++'], 'https://github.com/', model.result.name))
+									]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(model.result.name)
+									]))
+							]))
+					]))
+			]));
+};
+var _rtfeldman$elm_workshop$Main$model = {
+	result: {id: 1, name: 'TheSeamau5/elm-checkerboardgrid-tutorial', stars: 66}
+};
+var _rtfeldman$elm_workshop$Main$main = {
+	main: _rtfeldman$elm_workshop$Main$view(_rtfeldman$elm_workshop$Main$model)
+};

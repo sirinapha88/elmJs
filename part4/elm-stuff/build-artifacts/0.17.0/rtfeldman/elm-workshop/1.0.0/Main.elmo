@@ -1,0 +1,159 @@
+var _rtfeldman$elm_workshop$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'DeleteById') {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					results: A2(
+						_elm_lang$core$List$filter,
+						function (result) {
+							return !_elm_lang$core$Native_Utils.eq(result.id, _p0._0);
+						},
+						model.results)
+				});
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{query: _p0._0});
+		}
+	});
+var _rtfeldman$elm_workshop$Main$initialModel = {
+	query: 'tutorial',
+	results: _elm_lang$core$Native_List.fromArray(
+		[
+			{id: 1, name: 'TheSeamau5/elm-checkerboardgrid-tutorial', stars: 66},
+			{id: 2, name: 'grzegorzbalcerek/elm-by-example', stars: 41},
+			{id: 3, name: 'sporto/elm-tutorial-app', stars: 35},
+			{id: 4, name: 'jvoigtlaender/Elm-Tutorium', stars: 10},
+			{id: 5, name: 'sporto/elm-tutorial-assets', stars: 7}
+		])
+};
+var _rtfeldman$elm_workshop$Main$Model = F2(
+	function (a, b) {
+		return {query: a, results: b};
+	});
+var _rtfeldman$elm_workshop$Main$SearchResult = F3(
+	function (a, b, c) {
+		return {id: a, name: b, stars: c};
+	});
+var _rtfeldman$elm_workshop$Main$DeleteById = function (a) {
+	return {ctor: 'DeleteById', _0: a};
+};
+var _rtfeldman$elm_workshop$Main$viewSearchResult = function (result) {
+	return A2(
+		_elm_lang$html$Html$li,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('star-count')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(result.stars))
+					])),
+				A2(
+				_elm_lang$html$Html$a,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$href(
+						A2(_elm_lang$core$Basics_ops['++'], 'https://github.com/', result.name)),
+						_elm_lang$html$Html_Attributes$target('_blank')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(result.name)
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('hide-result'),
+						_elm_lang$html$Html_Events$onClick(
+						_rtfeldman$elm_workshop$Main$DeleteById(result.id))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('X')
+					]))
+			]));
+};
+var _rtfeldman$elm_workshop$Main$SetQuery = function (a) {
+	return {ctor: 'SetQuery', _0: a};
+};
+var _rtfeldman$elm_workshop$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('content')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$header,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h1,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('ElmHub')
+							])),
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('tagline')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('“Like GitHub, but for Elm things.”')
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('search-query'),
+						_elm_lang$html$Html_Events$onInput(
+						function (query) {
+							return _rtfeldman$elm_workshop$Main$SetQuery(query);
+						}),
+						_elm_lang$html$Html_Attributes$defaultValue(model.query)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('search-button')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Search')
+					])),
+				A2(
+				_elm_lang$html$Html$ul,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('results')
+					]),
+				A2(_elm_lang$core$List$map, _rtfeldman$elm_workshop$Main$viewSearchResult, model.results))
+			]));
+};
+var _rtfeldman$elm_workshop$Main$main = {
+	main: _elm_lang$html$Html_App$beginnerProgram(
+		{view: _rtfeldman$elm_workshop$Main$view, update: _rtfeldman$elm_workshop$Main$update, model: _rtfeldman$elm_workshop$Main$initialModel})
+};
