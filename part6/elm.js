@@ -8201,7 +8201,15 @@ var _rtfeldman$elm_workshop$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'HandleSearchError':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							errorMessage: _elm_lang$core$Maybe$Just('Something went wrong!')
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SetQuery':
 				return {
 					ctor: '_Tuple2',

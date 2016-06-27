@@ -1,0 +1,170 @@
+var _project_fuzzball$test_runner$Test_Runner_Html_App$defaultRunCount = 100;
+var _project_fuzzball$test_runner$Test_Runner_Html_App$toThunksHelp = F2(
+	function (labels, runner) {
+		toThunksHelp:
+		while (true) {
+			var _p0 = runner;
+			switch (_p0.ctor) {
+				case 'Runnable':
+					return _elm_lang$core$Native_List.fromArray(
+						[
+							function (_p1) {
+							var _p2 = _p1;
+							return {
+								ctor: '_Tuple2',
+								_0: labels,
+								_1: _project_fuzzball$test$Test_Runner$run(_p0._0)
+							};
+						}
+						]);
+				case 'Labeled':
+					var _v2 = A2(_elm_lang$core$List_ops['::'], _p0._0, labels),
+						_v3 = _p0._1;
+					labels = _v2;
+					runner = _v3;
+					continue toThunksHelp;
+				default:
+					return A2(
+						_elm_lang$core$List$concatMap,
+						_project_fuzzball$test_runner$Test_Runner_Html_App$toThunksHelp(labels),
+						_p0._0);
+			}
+		}
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$toThunks = _project_fuzzball$test_runner$Test_Runner_Html_App$toThunksHelp(
+	_elm_lang$core$Native_List.fromArray(
+		[]));
+var _project_fuzzball$test_runner$Test_Runner_Html_App$fromNever = function (a) {
+	fromNever:
+	while (true) {
+		var _v4 = a;
+		a = _v4;
+		continue fromNever;
+	}
+};
+var _project_fuzzball$test_runner$Test_Runner_Html_App$timeToSeed = function (time) {
+	return _mgold$elm_random_pcg$Random_Pcg$initialSeed(
+		_elm_lang$core$Basics$floor(4294967295 * time));
+};
+var _project_fuzzball$test_runner$Test_Runner_Html_App$RunnerOptions = F2(
+	function (a, b) {
+		return {seed: a, runs: b};
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$AppOptions = F4(
+	function (a, b, c, d) {
+		return {init: a, update: b, view: c, subscriptions: d};
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$SubMsg = function (a) {
+	return {ctor: 'SubMsg', _0: a};
+};
+var _project_fuzzball$test_runner$Test_Runner_Html_App$initOrView = F2(
+	function (view, model) {
+		var _p3 = model;
+		if (_p3.ctor === 'Uninitialized') {
+			return _elm_lang$html$Html$text('');
+		} else {
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_project_fuzzball$test_runner$Test_Runner_Html_App$SubMsg,
+				view(_p3._1));
+		}
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$subscriptions = F2(
+	function (subs, model) {
+		var _p4 = model;
+		if (_p4.ctor === 'Uninitialized') {
+			return _elm_lang$core$Platform_Sub$none;
+		} else {
+			return A2(
+				_elm_lang$core$Platform_Sub$map,
+				_project_fuzzball$test_runner$Test_Runner_Html_App$SubMsg,
+				subs(_p4._1));
+		}
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$Init = function (a) {
+	return {ctor: 'Init', _0: a};
+};
+var _project_fuzzball$test_runner$Test_Runner_Html_App$Initialized = F2(
+	function (a, b) {
+		return {ctor: 'Initialized', _0: a, _1: b};
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$initOrUpdate = F2(
+	function (msg, maybeModel) {
+		var _p5 = maybeModel;
+		if (_p5.ctor === 'Uninitialized') {
+			var _p6 = msg;
+			if (_p6.ctor === 'Init') {
+				var _p9 = _p6._0;
+				var finalSeed = function () {
+					var _p7 = _p5._1;
+					if (_p7.ctor === 'Just') {
+						return _p7._0;
+					} else {
+						return _project_fuzzball$test_runner$Test_Runner_Html_App$timeToSeed(_p9);
+					}
+				}();
+				var _p8 = A2(
+					_p5._4,
+					_p9,
+					_project_fuzzball$test_runner$Test_Runner_Html_App$toThunks(
+						A3(_project_fuzzball$test$Test_Runner$fromTest, _p5._2, finalSeed, _p5._3)));
+				var subModel = _p8._0;
+				var subCmd = _p8._1;
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_project_fuzzball$test_runner$Test_Runner_Html_App$Initialized, _p5._0, subModel),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _project_fuzzball$test_runner$Test_Runner_Html_App$SubMsg, subCmd)
+				};
+			} else {
+				return _elm_lang$core$Native_Utils.crashCase(
+					'Test.Runner.Html.App',
+					{
+						start: {line: 45, column: 13},
+						end: {line: 65, column: 70}
+					},
+					_p6)('Attempted to run a SubMsg pre-Init!');
+			}
+		} else {
+			var _p14 = _p5._0;
+			var _p11 = msg;
+			if (_p11.ctor === 'SubMsg') {
+				var _p12 = A2(_p14, _p11._0, _p5._1);
+				var newModel = _p12._0;
+				var cmd = _p12._1;
+				return {
+					ctor: '_Tuple2',
+					_0: A2(_project_fuzzball$test_runner$Test_Runner_Html_App$Initialized, _p14, newModel),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _project_fuzzball$test_runner$Test_Runner_Html_App$SubMsg, cmd)
+				};
+			} else {
+				return _elm_lang$core$Native_Utils.crashCase(
+					'Test.Runner.Html.App',
+					{
+						start: {line: 68, column: 13},
+						end: {line: 77, column: 59}
+					},
+					_p11)('Attempted to init twice!');
+			}
+		}
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$Uninitialized = F5(
+	function (a, b, c, d, e) {
+		return {ctor: 'Uninitialized', _0: a, _1: b, _2: c, _3: d, _4: e};
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html_App$run = F3(
+	function (runnerOpts, appOpts, test) {
+		var cmd = A3(_elm_lang$core$Task$perform, _project_fuzzball$test_runner$Test_Runner_Html_App$fromNever, _project_fuzzball$test_runner$Test_Runner_Html_App$Init, _elm_lang$core$Time$now);
+		var runs = A2(_elm_lang$core$Maybe$withDefault, _project_fuzzball$test_runner$Test_Runner_Html_App$defaultRunCount, runnerOpts.runs);
+		var init = {
+			ctor: '_Tuple2',
+			_0: A5(_project_fuzzball$test_runner$Test_Runner_Html_App$Uninitialized, appOpts.update, runnerOpts.seed, runs, test, appOpts.init),
+			_1: cmd
+		};
+		return _elm_lang$html$Html_App$program(
+			{
+				init: init,
+				update: _project_fuzzball$test_runner$Test_Runner_Html_App$initOrUpdate,
+				view: _project_fuzzball$test_runner$Test_Runner_Html_App$initOrView(appOpts.view),
+				subscriptions: _project_fuzzball$test_runner$Test_Runner_Html_App$subscriptions(appOpts.subscriptions)
+			});
+	});

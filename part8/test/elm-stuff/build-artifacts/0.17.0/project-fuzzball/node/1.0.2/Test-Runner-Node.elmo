@@ -1,0 +1,331 @@
+var _project_fuzzball$node$Test_Runner_Node$formatDuration = function (time) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(time),
+		' ms');
+};
+var _project_fuzzball$node$Test_Runner_Node$never = function (a) {
+	never:
+	while (true) {
+		var _v0 = a;
+		a = _v0;
+		continue never;
+	}
+};
+var _project_fuzzball$node$Test_Runner_Node$warn = F2(
+	function (str, result) {
+		var _p0 = _elm_lang$core$Debug$log(str);
+		return result;
+	});
+var _project_fuzzball$node$Test_Runner_Node$encodeChalk = function (_p1) {
+	var _p2 = _p1;
+	return _elm_lang$core$Json_Encode$object(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: 'styles',
+				_1: _elm_lang$core$Json_Encode$list(
+					A2(_elm_lang$core$List$map, _elm_lang$core$Json_Encode$string, _p2.styles))
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'text',
+				_1: _elm_lang$core$Json_Encode$string(_p2.text)
+			}
+			]));
+};
+var _project_fuzzball$node$Test_Runner_Node$indent = function (str) {
+	return A2(
+		_elm_lang$core$String$join,
+		'\n',
+		A2(
+			_elm_lang$core$List$map,
+			F2(
+				function (x, y) {
+					return A2(_elm_lang$core$Basics_ops['++'], x, y);
+				})('    '),
+			A2(_elm_lang$core$String$split, '\n', str)));
+};
+var _project_fuzzball$node$Test_Runner_Node$failuresToChalk = F2(
+	function (labels, messages) {
+		var _p3 = function () {
+			var _p4 = labels;
+			if (_p4.ctor === '[]') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Nothing,
+					_1: _elm_lang$core$Native_List.fromArray(
+						[])
+				};
+			} else {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Just(_p4._0),
+					_1: _elm_lang$core$List$reverse(_p4._1)
+				};
+			}
+		}();
+		var maybeLastLabel = _p3._0;
+		var otherLabels = _p3._1;
+		var outputMessage = function (message) {
+			var _p5 = maybeLastLabel;
+			if (_p5.ctor === 'Just') {
+				return _elm_lang$core$Native_List.fromArray(
+					[
+						{
+						styles: _elm_lang$core$Native_List.fromArray(
+							['red']),
+						text: A2(
+							_elm_lang$core$Basics_ops['++'],
+							'✗ ',
+							A2(_elm_lang$core$Basics_ops['++'], _p5._0, '\n'))
+					},
+						{
+						styles: _elm_lang$core$Native_List.fromArray(
+							[]),
+						text: A2(
+							_elm_lang$core$Basics_ops['++'],
+							'\n',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_project_fuzzball$node$Test_Runner_Node$indent(message),
+								'\n\n'))
+					}
+					]);
+			} else {
+				return _elm_lang$core$Native_List.fromArray(
+					[
+						{
+						styles: _elm_lang$core$Native_List.fromArray(
+							[]),
+						text: A2(
+							_elm_lang$core$Basics_ops['++'],
+							_project_fuzzball$node$Test_Runner_Node$indent(message),
+							'\n\n')
+					}
+					]);
+			}
+		};
+		var outputContext = A2(
+			_elm_lang$core$List$map,
+			function (message) {
+				return {
+					styles: _elm_lang$core$Native_List.fromArray(
+						['dim']),
+					text: A2(
+						_elm_lang$core$Basics_ops['++'],
+						'↓ ',
+						A2(_elm_lang$core$Basics_ops['++'], message, '\n'))
+				};
+			},
+			otherLabels);
+		return _elm_lang$core$Json_Encode$list(
+			A2(
+				_elm_lang$core$List$map,
+				_project_fuzzball$node$Test_Runner_Node$encodeChalk,
+				_elm_lang$core$List$concat(
+					A2(
+						_elm_lang$core$List_ops['::'],
+						outputContext,
+						A2(_elm_lang$core$List$map, outputMessage, messages)))));
+	});
+var _project_fuzzball$node$Test_Runner_Node$chalkAllFailures = F2(
+	function (emit, _p6) {
+		var _p7 = _p6;
+		var _p8 = A2(_elm_lang$core$List$filterMap, _project_fuzzball$test$Expect$getFailure, _p7._1);
+		if (_p8.ctor === '[]') {
+			return _elm_lang$core$Platform_Cmd$none;
+		} else {
+			return emit(
+				{
+					ctor: '_Tuple2',
+					_0: 'CHALK',
+					_1: A2(_project_fuzzball$node$Test_Runner_Node$failuresToChalk, _p7._0, _p8)
+				});
+		}
+	});
+var _project_fuzzball$node$Test_Runner_Node$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {available: a, running: b, queue: c, completed: d, startTime: e, finishTime: f};
+	});
+var _project_fuzzball$node$Test_Runner_Node$Finish = function (a) {
+	return {ctor: 'Finish', _0: a};
+};
+var _project_fuzzball$node$Test_Runner_Node$Dispatch = {ctor: 'Dispatch'};
+var _project_fuzzball$node$Test_Runner_Node$dispatch = A3(
+	_elm_lang$core$Task$perform,
+	_elm_lang$core$Basics$identity,
+	_elm_lang$core$Basics$identity,
+	_elm_lang$core$Task$succeed(_project_fuzzball$node$Test_Runner_Node$Dispatch));
+var _project_fuzzball$node$Test_Runner_Node$update = F3(
+	function (emit, msg, model) {
+		var _p9 = msg;
+		if (_p9.ctor === 'Finish') {
+			var stat = F2(
+				function (label, value) {
+					return _elm_lang$core$Native_List.fromArray(
+						[
+							{
+							styles: _elm_lang$core$Native_List.fromArray(
+								['dim']),
+							text: label
+						},
+							{
+							styles: _elm_lang$core$Native_List.fromArray(
+								[]),
+							text: A2(_elm_lang$core$Basics_ops['++'], value, '\n')
+						}
+						]);
+				});
+			var duration = _p9._0 - model.startTime;
+			var failed = _elm_lang$core$List$length(
+				A2(
+					_elm_lang$core$List$filter,
+					function (_p10) {
+						return A2(
+							_elm_lang$core$List$all,
+							F2(
+								function (x, y) {
+									return !_elm_lang$core$Native_Utils.eq(x, y);
+								})(_project_fuzzball$test$Expect$pass),
+							_elm_lang$core$Basics$snd(_p10));
+					},
+					model.completed));
+			var passed = _elm_lang$core$List$length(model.completed) - failed;
+			var headline = (_elm_lang$core$Native_Utils.cmp(failed, 0) > 0) ? _elm_lang$core$Native_List.fromArray(
+				[
+					{
+					styles: _elm_lang$core$Native_List.fromArray(
+						['underline', 'red']),
+					text: '\nTEST RUN FAILED\n\n'
+				}
+				]) : _elm_lang$core$Native_List.fromArray(
+				[
+					{
+					styles: _elm_lang$core$Native_List.fromArray(
+						['underline', 'green']),
+					text: '\nTEST RUN PASSED\n\n'
+				}
+				]);
+			var summary = _elm_lang$core$Json_Encode$list(
+				A2(
+					_elm_lang$core$List$map,
+					_project_fuzzball$node$Test_Runner_Node$encodeChalk,
+					_elm_lang$core$List$concat(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								headline,
+								A2(
+								stat,
+								'Duration: ',
+								_project_fuzzball$node$Test_Runner_Node$formatDuration(duration)),
+								A2(
+								stat,
+								'Passed:   ',
+								_elm_lang$core$Basics$toString(passed)),
+								A2(
+								stat,
+								'Failed:   ',
+								_elm_lang$core$Basics$toString(failed))
+							]))));
+			var exitCode = _elm_lang$core$Native_Utils.eq(failed, 0) ? 0 : 1;
+			var data = _elm_lang$core$Json_Encode$object(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{
+						ctor: '_Tuple2',
+						_0: 'exitCode',
+						_1: _elm_lang$core$Json_Encode$int(exitCode)
+					},
+						{ctor: '_Tuple2', _0: 'message', _1: summary}
+					]));
+			return A2(
+				_project_fuzzball$node$Test_Runner_Node$warn,
+				'Attempted to Dispatch when all tests completed!',
+				{
+					ctor: '_Tuple2',
+					_0: model,
+					_1: emit(
+						{ctor: '_Tuple2', _0: 'FINISHED', _1: data})
+				});
+		} else {
+			var _p11 = model.queue;
+			if (_p11.ctor === '[]') {
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A3(_elm_lang$core$Task$perform, _project_fuzzball$node$Test_Runner_Node$never, _project_fuzzball$node$Test_Runner_Node$Finish, _elm_lang$core$Time$now)
+				};
+			} else {
+				var _p13 = _p11._0;
+				var _p12 = A2(_elm_lang$core$Dict$get, _p13, model.available);
+				if (_p12.ctor === 'Nothing') {
+					return A2(
+						_project_fuzzball$node$Test_Runner_Node$warn,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Could not find testId ',
+							_elm_lang$core$Basics$toString(_p13)),
+						{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
+				} else {
+					var available = A2(_elm_lang$core$Dict$remove, _p13, model.available);
+					var result = _p12._0(
+						{ctor: '_Tuple0'});
+					var completed = A2(
+						_elm_lang$core$Basics_ops['++'],
+						model.completed,
+						_elm_lang$core$Native_List.fromArray(
+							[result]));
+					var newModel = _elm_lang$core$Native_Utils.update(
+						model,
+						{completed: completed, available: available, queue: _p11._1});
+					var cmd = A2(_project_fuzzball$node$Test_Runner_Node$chalkAllFailures, emit, result);
+					return {
+						ctor: '_Tuple2',
+						_0: newModel,
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							_elm_lang$core$Native_List.fromArray(
+								[cmd, _project_fuzzball$node$Test_Runner_Node$dispatch]))
+					};
+				}
+			}
+		}
+	});
+var _project_fuzzball$node$Test_Runner_Node$init = F2(
+	function (startTime, thunks) {
+		var indexedThunks = A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			thunks);
+		var model = {
+			available: _elm_lang$core$Dict$fromList(indexedThunks),
+			running: _elm_lang$core$Set$empty,
+			queue: A2(_elm_lang$core$List$map, _elm_lang$core$Basics$fst, indexedThunks),
+			completed: _elm_lang$core$Native_List.fromArray(
+				[]),
+			startTime: startTime,
+			finishTime: _elm_lang$core$Maybe$Nothing
+		};
+		return {ctor: '_Tuple2', _0: model, _1: _project_fuzzball$node$Test_Runner_Node$dispatch};
+	});
+var _project_fuzzball$node$Test_Runner_Node$runWithOptions = F3(
+	function (runs, seed, emit) {
+		return A2(
+			_project_fuzzball$test_runner$Test_Runner_Html_App$run,
+			{runs: runs, seed: seed},
+			{
+				init: _project_fuzzball$node$Test_Runner_Node$init,
+				update: _project_fuzzball$node$Test_Runner_Node$update(emit),
+				view: function (_p14) {
+					return _elm_lang$html$Html$text('This should be run in Node, not in a browser!');
+				},
+				subscriptions: function (_p15) {
+					return _elm_lang$core$Platform_Sub$none;
+				}
+			});
+	});
+var _project_fuzzball$node$Test_Runner_Node$run = A2(_project_fuzzball$node$Test_Runner_Node$runWithOptions, _elm_lang$core$Maybe$Nothing, _elm_lang$core$Maybe$Nothing);

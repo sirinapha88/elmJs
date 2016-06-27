@@ -1,0 +1,53 @@
+var _project_fuzzball$test$Test_Runner_Log$summarize = function (_p0) {
+	var _p1 = _p0;
+	var _p2 = _p1.failed;
+	var headline = (_elm_lang$core$Native_Utils.cmp(_p2, 0) > 0) ? 'TEST RUN FAILED' : 'TEST RUN PASSED';
+	return A2(
+		_elm_lang$core$String$join,
+		'\n',
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(_elm_lang$core$Basics_ops['++'], _p1.output, '\n\n'),
+				A2(_elm_lang$core$Basics_ops['++'], headline, '\n'),
+				A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Passed: ',
+				_elm_lang$core$Basics$toString(_p1.passed)),
+				A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Failed: ',
+				_elm_lang$core$Basics$toString(_p2))
+			]));
+};
+var _project_fuzzball$test$Test_Runner_Log$logOutput = F2(
+	function (summary, arg) {
+		var output = A2(
+			_elm_lang$core$Basics_ops['++'],
+			_project_fuzzball$test$Test_Runner_Log$summarize(summary),
+			'\n\nExit code');
+		var _p3 = (_elm_lang$core$Native_Utils.cmp(summary.failed, 0) > 0) ? function (_p4) {
+			return {ctor: '_Tuple0'};
+		}(
+			function (_p5) {
+				return _elm_lang$core$Native_Utils.crash(
+					'Test.Runner.Log',
+					{
+						start: {line: 69, column: 31},
+						end: {line: 69, column: 42}
+					})('FAILED TEST RUN');
+			}(
+				A3(_elm_lang$core$Basics$flip, _elm_lang$core$Debug$log, 1, output))) : function (_p6) {
+			return {ctor: '_Tuple0'};
+		}(
+			A3(_elm_lang$core$Basics$flip, _elm_lang$core$Debug$log, 0, output));
+		return arg;
+	});
+var _project_fuzzball$test$Test_Runner_Log$runWithOptions = F3(
+	function (runs, seed, test) {
+		return _project_fuzzball$test$Test_Runner_Log$logOutput(
+			A3(_project_fuzzball$test$Test_Runner_String$runWithOptions, runs, seed, test));
+	});
+var _project_fuzzball$test$Test_Runner_Log$run = function (test) {
+	return _project_fuzzball$test$Test_Runner_Log$logOutput(
+		_project_fuzzball$test$Test_Runner_String$run(test));
+};

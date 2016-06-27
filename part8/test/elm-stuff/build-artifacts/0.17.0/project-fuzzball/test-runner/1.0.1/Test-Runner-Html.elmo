@@ -1,0 +1,489 @@
+var _project_fuzzball$test_runner$Test_Runner_Html$formatDuration = function (time) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(time),
+		' ms');
+};
+var _project_fuzzball$test_runner$Test_Runner_Html$warn = F2(
+	function (str, result) {
+		var _p0 = _elm_lang$core$Debug$log(str);
+		return result;
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$never = function (a) {
+	never:
+	while (true) {
+		var _v0 = a;
+		a = _v0;
+		continue never;
+	}
+};
+var _project_fuzzball$test_runner$Test_Runner_Html$resultsStyle = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'font-size', _1: '14px'},
+			{ctor: '_Tuple2', _0: 'line-height', _1: '1.3'},
+			{ctor: '_Tuple2', _0: 'font-family', _1: 'Menlo, Consolas, \"Fira Mono\", \"DejaVu Sans Mono\", \"Liberation Monospace\", \"Liberation Mono\", Monaco, \"Lucida Console\", \"Courier New\", monospace'}
+		]));
+var _project_fuzzball$test_runner$Test_Runner_Html$withColorChar = F3(
+	function ($char, textColor, str) {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$style(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'color', _1: textColor}
+						]))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(
+					A2(
+						_elm_lang$core$String$cons,
+						$char,
+						A2(
+							_elm_lang$core$String$cons,
+							_elm_lang$core$Native_Utils.chr(' '),
+							str)))
+				]));
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$withoutEmptyStrings = _elm_lang$core$List$filter(
+	F2(
+		function (x, y) {
+			return !_elm_lang$core$Native_Utils.eq(x, y);
+		})(''));
+var _project_fuzzball$test_runner$Test_Runner_Html$preAttributes = _elm_lang$core$Native_List.fromArray(
+	[
+		_elm_lang$html$Html_Attributes$width(80),
+		_elm_lang$html$Html_Attributes$style(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{ctor: '_Tuple2', _0: 'margin-left', _1: '32px'},
+				{ctor: '_Tuple2', _0: 'font-size', _1: 'inherit'},
+				{ctor: '_Tuple2', _0: 'font-family', _1: 'inherit'}
+			]))
+	]);
+var _project_fuzzball$test_runner$Test_Runner_Html$viewFailures = F2(
+	function (message, labels) {
+		var _p1 = function () {
+			var _p2 = labels;
+			if (_p2.ctor === '[]') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Nothing,
+					_1: _elm_lang$core$Native_List.fromArray(
+						[])
+				};
+			} else {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Just(_p2._0),
+					_1: _elm_lang$core$List$reverse(_p2._1)
+				};
+			}
+		}();
+		var maybeLastLabel = _p1._0;
+		var otherLabels = _p1._1;
+		var viewMessage = function (message) {
+			var _p3 = maybeLastLabel;
+			if (_p3.ctor === 'Just') {
+				return A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(
+							_project_fuzzball$test_runner$Test_Runner_Html$withColorChar,
+							_elm_lang$core$Native_Utils.chr('✗'),
+							'hsla(3, 100%, 40%, 1.0)',
+							_p3._0),
+							A2(
+							_elm_lang$html$Html$pre,
+							_project_fuzzball$test_runner$Test_Runner_Html$preAttributes,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(message)
+								]))
+						]));
+			} else {
+				return A2(
+					_elm_lang$html$Html$pre,
+					_project_fuzzball$test_runner$Test_Runner_Html$preAttributes,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(message)
+						]));
+			}
+		};
+		var viewContext = A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			A2(
+				_elm_lang$core$List$map,
+				A2(
+					_project_fuzzball$test_runner$Test_Runner_Html$withColorChar,
+					_elm_lang$core$Native_Utils.chr('↓'),
+					'darkgray'),
+				otherLabels));
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Native_List.fromArray(
+				[viewContext]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					viewMessage(message)
+				]));
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$viewOutcome = F2(
+	function (descriptions, expectation) {
+		var _p4 = _project_fuzzball$test$Expect$getFailure(expectation);
+		if (_p4.ctor === 'Just') {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$li,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$style(
+							_elm_lang$core$Native_List.fromArray(
+								[
+									{ctor: '_Tuple2', _0: 'margin', _1: '40px 0'}
+								]))
+						]),
+					function (_p5) {
+						return A2(
+							_project_fuzzball$test_runner$Test_Runner_Html$viewFailures,
+							_p4._0,
+							_project_fuzzball$test_runner$Test_Runner_Html$withoutEmptyStrings(_p5));
+					}(descriptions))
+				]);
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		}
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$viewOutcomes = function (_p6) {
+	var _p7 = _p6;
+	return A2(
+		_elm_lang$core$List$concatMap,
+		_project_fuzzball$test_runner$Test_Runner_Html$viewOutcome(_p7._0),
+		_p7._1);
+};
+var _project_fuzzball$test_runner$Test_Runner_Html$viewContextualOutcomes = _elm_lang$core$List$concatMap(_project_fuzzball$test_runner$Test_Runner_Html$viewOutcomes);
+var _project_fuzzball$test_runner$Test_Runner_Html$view = function (model) {
+	var failures = A2(
+		_elm_lang$core$List$filter,
+		function (_p8) {
+			return A2(
+				_elm_lang$core$List$all,
+				F2(
+					function (x, y) {
+						return !_elm_lang$core$Native_Utils.eq(x, y);
+					})(_project_fuzzball$test$Expect$pass),
+				_elm_lang$core$Basics$snd(_p8));
+		},
+		model.completed);
+	var remainingCount = _elm_lang$core$List$length(
+		_elm_lang$core$Dict$keys(model.available));
+	var completedCount = _elm_lang$core$List$length(model.completed);
+	var summary = function () {
+		var _p9 = model.finishTime;
+		if (_p9.ctor === 'Just') {
+			var duration = _project_fuzzball$test_runner$Test_Runner_Html$formatDuration(_p9._0 - model.startTime);
+			var thStyle = _elm_lang$core$Native_List.fromArray(
+				[
+					{ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
+					{ctor: '_Tuple2', _0: 'padding-right', _1: '10px'}
+				]);
+			var _p10 = _elm_lang$core$List$isEmpty(failures) ? {ctor: '_Tuple2', _0: 'darkgreen', _1: 'Test Run Passed'} : {ctor: '_Tuple2', _0: 'hsla(3, 100%, 40%, 1.0)', _1: 'Test Run Failed'};
+			var headlineColor = _p10._0;
+			var headlineText = _p10._1;
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h2,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'color', _1: headlineColor}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(headlineText)
+							])),
+						A2(
+						_elm_lang$html$Html$table,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$tbody,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(
+										_elm_lang$html$Html$tr,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$th,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$style(thStyle)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html$text('Duration')
+													])),
+												A2(
+												_elm_lang$html$Html$td,
+												_elm_lang$core$Native_List.fromArray(
+													[]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html$text(duration)
+													]))
+											])),
+										A2(
+										_elm_lang$html$Html$tr,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$th,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$style(thStyle)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html$text('Passed')
+													])),
+												A2(
+												_elm_lang$html$Html$td,
+												_elm_lang$core$Native_List.fromArray(
+													[]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html$text(
+														_elm_lang$core$Basics$toString(completedCount))
+													]))
+											])),
+										A2(
+										_elm_lang$html$Html$tr,
+										_elm_lang$core$Native_List.fromArray(
+											[]),
+										_elm_lang$core$Native_List.fromArray(
+											[
+												A2(
+												_elm_lang$html$Html$th,
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html_Attributes$style(thStyle)
+													]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html$text('Failed')
+													])),
+												A2(
+												_elm_lang$html$Html$td,
+												_elm_lang$core$Native_List.fromArray(
+													[]),
+												_elm_lang$core$Native_List.fromArray(
+													[
+														_elm_lang$html$Html$text(
+														_elm_lang$core$Basics$toString(
+															_elm_lang$core$List$length(failures)))
+													]))
+											]))
+									]))
+							]))
+					]));
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$h2,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Running Tests...')
+							])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(completedCount),
+									' completed'))
+							])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(remainingCount),
+									' remaining'))
+							]))
+					]));
+		}
+	}();
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'width', _1: '960px'},
+						{ctor: '_Tuple2', _0: 'margin', _1: 'auto 40px'},
+						{ctor: '_Tuple2', _0: 'font-family', _1: 'verdana, sans-serif'}
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				summary,
+				A2(
+				_elm_lang$html$Html$ol,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('results'),
+						_project_fuzzball$test_runner$Test_Runner_Html$resultsStyle
+					]),
+				_project_fuzzball$test_runner$Test_Runner_Html$viewContextualOutcomes(failures))
+			]));
+};
+var _project_fuzzball$test_runner$Test_Runner_Html$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {available: a, running: b, queue: c, completed: d, startTime: e, finishTime: f};
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$Finish = function (a) {
+	return {ctor: 'Finish', _0: a};
+};
+var _project_fuzzball$test_runner$Test_Runner_Html$Dispatch = {ctor: 'Dispatch'};
+var _project_fuzzball$test_runner$Test_Runner_Html$dispatch = A3(
+	_elm_lang$core$Task$perform,
+	_elm_lang$core$Basics$identity,
+	_elm_lang$core$Basics$identity,
+	_elm_lang$core$Task$succeed(_project_fuzzball$test_runner$Test_Runner_Html$Dispatch));
+var _project_fuzzball$test_runner$Test_Runner_Html$update = F2(
+	function (msg, model) {
+		var _p11 = msg;
+		if (_p11.ctor === 'Finish') {
+			var _p12 = model.finishTime;
+			if (_p12.ctor === 'Nothing') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							finishTime: _elm_lang$core$Maybe$Just(_p11._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			} else {
+				return A2(
+					_project_fuzzball$test_runner$Test_Runner_Html$warn,
+					'Attempted to Finish more than once!',
+					{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
+			}
+		} else {
+			var _p13 = model.queue;
+			if (_p13.ctor === '[]') {
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A3(_elm_lang$core$Task$perform, _project_fuzzball$test_runner$Test_Runner_Html$never, _project_fuzzball$test_runner$Test_Runner_Html$Finish, _elm_lang$core$Time$now)
+				};
+			} else {
+				var _p15 = _p13._0;
+				var _p14 = A2(_elm_lang$core$Dict$get, _p15, model.available);
+				if (_p14.ctor === 'Nothing') {
+					return A2(
+						_project_fuzzball$test_runner$Test_Runner_Html$warn,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Could not find testId ',
+							_elm_lang$core$Basics$toString(_p15)),
+						{ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
+				} else {
+					var available = A2(_elm_lang$core$Dict$remove, _p15, model.available);
+					var completed = A2(
+						_elm_lang$core$Basics_ops['++'],
+						model.completed,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_p14._0(
+								{ctor: '_Tuple0'})
+							]));
+					var newModel = _elm_lang$core$Native_Utils.update(
+						model,
+						{completed: completed, available: available, queue: _p13._1});
+					return {ctor: '_Tuple2', _0: newModel, _1: _project_fuzzball$test_runner$Test_Runner_Html$dispatch};
+				}
+			}
+		}
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$init = F2(
+	function (startTime, thunks) {
+		var indexedThunks = A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			thunks);
+		var model = {
+			available: _elm_lang$core$Dict$fromList(indexedThunks),
+			running: _elm_lang$core$Set$empty,
+			queue: A2(_elm_lang$core$List$map, _elm_lang$core$Basics$fst, indexedThunks),
+			completed: _elm_lang$core$Native_List.fromArray(
+				[]),
+			startTime: startTime,
+			finishTime: _elm_lang$core$Maybe$Nothing
+		};
+		return {ctor: '_Tuple2', _0: model, _1: _project_fuzzball$test_runner$Test_Runner_Html$dispatch};
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$runWithOptions = F2(
+	function (runs, seed) {
+		return A2(
+			_project_fuzzball$test_runner$Test_Runner_Html_App$run,
+			{runs: runs, seed: seed},
+			{
+				init: _project_fuzzball$test_runner$Test_Runner_Html$init,
+				update: _project_fuzzball$test_runner$Test_Runner_Html$update,
+				view: _project_fuzzball$test_runner$Test_Runner_Html$view,
+				subscriptions: function (_p16) {
+					return _elm_lang$core$Platform_Sub$none;
+				}
+			});
+	});
+var _project_fuzzball$test_runner$Test_Runner_Html$run = A2(_project_fuzzball$test_runner$Test_Runner_Html$runWithOptions, _elm_lang$core$Maybe$Nothing, _elm_lang$core$Maybe$Nothing);

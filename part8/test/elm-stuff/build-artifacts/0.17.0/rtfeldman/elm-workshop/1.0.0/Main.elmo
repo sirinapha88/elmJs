@@ -1,0 +1,8 @@
+var _rtfeldman$elm_workshop$Main$emit = _elm_lang$core$Native_Platform.outgoingPort(
+	'emit',
+	function (v) {
+		return [v._0, v._1];
+	});
+var _rtfeldman$elm_workshop$Main$main = {
+	main: A2(_project_fuzzball$node$Test_Runner_Node$run, _rtfeldman$elm_workshop$Main$emit, _rtfeldman$elm_workshop$Tests$all)
+};

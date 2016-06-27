@@ -1,0 +1,76 @@
+var _rtfeldman$elm_workshop$Tests$all = A2(
+	_project_fuzzball$test$Test$describe,
+	'GitHub Response Decoder',
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_project_fuzzball$test$Test$test,
+			'it results in an Err for invalid JSON',
+			function (_p0) {
+				var _p1 = _p0;
+				var isErrorResult = function (result) {
+					var _p2 = result;
+					if (_p2.ctor === 'Err') {
+						return true;
+					} else {
+						return false;
+					}
+				};
+				var json = '{ \"pizza\": [] }';
+				return A2(
+					_project_fuzzball$test$Expect$true,
+					'Expected decoding an invalid response to return an Err.',
+					isErrorResult(
+						A2(_elm_lang$core$Json_Decode$decodeString, _rtfeldman$elm_workshop$ElmHub$responseDecoder, json)));
+			}),
+			A2(
+			_project_fuzzball$test$Test$test,
+			'it successfully decodes a valid response',
+			function (_p3) {
+				var _p4 = _p3;
+				return A2(
+					_project_fuzzball$test$Expect$equal,
+					_elm_lang$core$Result$Ok(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{id: 5, name: 'foo', stars: 42},
+								{id: 3, name: 'bar', stars: 77}
+							])),
+					A2(_elm_lang$core$Json_Decode$decodeString, _rtfeldman$elm_workshop$ElmHub$responseDecoder, '{ \"items\": [ { \"id\" : 5, \"full_name\" : \"foo\", \"stargazers_count\" : 42 }\n                              , { \"id\" : 3, \"full_name\" : \"bar\", \"stargazers_count\" : 77 }\n                              ]\n                              }'));
+			}),
+			A3(
+			_project_fuzzball$test$Test$fuzz,
+			_project_fuzzball$test$Fuzz$list(_project_fuzzball$test$Fuzz$int),
+			'it decodes one SearchResult for each \'item\' in the JSON',
+			function (ids) {
+				var jsonFromId = function (id) {
+					return A2(
+						_elm_lang$core$Basics_ops['++'],
+						'{\"id\": ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(id),
+							', \"full_name\": \"foo\", \"stargazers_count\": 42}'));
+				};
+				var ids = _elm_lang$core$Native_List.fromArray(
+					[12, 5, 76]);
+				var jsonItems = A2(
+					_elm_lang$core$String$join,
+					', ',
+					A2(_elm_lang$core$List$map, jsonFromId, ids));
+				var json = A2(
+					_elm_lang$core$Basics_ops['++'],
+					'{ \"items\": [',
+					A2(_elm_lang$core$Basics_ops['++'], jsonItems, '] }'));
+				var _p5 = A2(_elm_lang$core$Json_Decode$decodeString, _rtfeldman$elm_workshop$ElmHub$responseDecoder, json);
+				if (_p5.ctor === 'Ok') {
+					return A2(
+						_project_fuzzball$test$Expect$equal,
+						_elm_lang$core$List$length(ids),
+						_elm_lang$core$List$length(_p5._0));
+				} else {
+					return _project_fuzzball$test$Expect$fail(
+						A2(_elm_lang$core$Basics_ops['++'], 'JSON decoding failed unexpectedly: ', _p5._0));
+				}
+			})
+		]));

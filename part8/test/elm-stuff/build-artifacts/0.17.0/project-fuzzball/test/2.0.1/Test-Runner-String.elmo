@@ -1,0 +1,149 @@
+var _project_fuzzball$test$Test_Runner_String$indentLines = function (str) {
+	return A2(
+		_elm_lang$core$String$join,
+		'\n',
+		A2(
+			_elm_lang$core$List$map,
+			F2(
+				function (x, y) {
+					return A2(_elm_lang$core$Basics_ops['++'], x, y);
+				})('    '),
+			A2(_elm_lang$core$String$split, '\n', str)));
+};
+var _project_fuzzball$test$Test_Runner_String$defaultRuns = 100;
+var _project_fuzzball$test$Test_Runner_String$defaultSeed = _mgold$elm_random_pcg$Random_Pcg$initialSeed(4295183);
+var _project_fuzzball$test$Test_Runner_String$outputFailures = F2(
+	function (message, labels) {
+		var _p0 = function () {
+			var _p1 = labels;
+			if (_p1.ctor === '[]') {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Nothing,
+					_1: _elm_lang$core$Native_List.fromArray(
+						[])
+				};
+			} else {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Maybe$Just(_p1._0),
+					_1: _elm_lang$core$List$reverse(_p1._1)
+				};
+			}
+		}();
+		var maybeLastLabel = _p0._0;
+		var otherLabels = _p0._1;
+		var outputMessage = function (message) {
+			var _p2 = maybeLastLabel;
+			if (_p2.ctor === 'Just') {
+				return A2(
+					_elm_lang$core$String$join,
+					'\n\n',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(_elm_lang$core$Basics_ops['++'], '✗ ', _p2._0),
+							message
+						]));
+			} else {
+				return message;
+			}
+		};
+		var outputContext = A2(
+			_elm_lang$core$String$join,
+			'\n',
+			A2(
+				_elm_lang$core$List$map,
+				F2(
+					function (x, y) {
+						return A2(_elm_lang$core$Basics_ops['++'], x, y);
+					})('↓ '),
+				otherLabels));
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			outputContext,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'\n',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					outputMessage(
+						_project_fuzzball$test$Test_Runner_String$indentLines(message)),
+					'\n')));
+	});
+var _project_fuzzball$test$Test_Runner_String$withoutEmptyStrings = _elm_lang$core$List$filter(
+	F2(
+		function (x, y) {
+			return !_elm_lang$core$Native_Utils.eq(x, y);
+		})(''));
+var _project_fuzzball$test$Test_Runner_String$fromExpectation = F3(
+	function (labels, expectation, summary) {
+		var _p3 = _project_fuzzball$test$Expect$getFailure(expectation);
+		if (_p3.ctor === 'Nothing') {
+			return _elm_lang$core$Native_Utils.update(
+				summary,
+				{passed: summary.passed + 1});
+		} else {
+			return {
+				output: A2(
+					_elm_lang$core$String$join,
+					'\n\n',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							summary.output,
+							function (_p4) {
+							return A2(
+								_project_fuzzball$test$Test_Runner_String$outputFailures,
+								_p3._0,
+								_project_fuzzball$test$Test_Runner_String$withoutEmptyStrings(_p4));
+						}(labels)
+						])),
+				failed: summary.failed + 1,
+				passed: summary.passed
+			};
+		}
+	});
+var _project_fuzzball$test$Test_Runner_String$toOutputHelp = F3(
+	function (labels, runner, summary) {
+		toOutputHelp:
+		while (true) {
+			var _p5 = runner;
+			switch (_p5.ctor) {
+				case 'Runnable':
+					return A3(
+						_elm_lang$core$List$foldl,
+						_project_fuzzball$test$Test_Runner_String$fromExpectation(labels),
+						summary,
+						_project_fuzzball$test$Test_Runner$run(_p5._0));
+				case 'Labeled':
+					var _v4 = A2(_elm_lang$core$List_ops['::'], _p5._0, labels),
+						_v5 = _p5._1,
+						_v6 = summary;
+					labels = _v4;
+					runner = _v5;
+					summary = _v6;
+					continue toOutputHelp;
+				default:
+					return A3(
+						_elm_lang$core$List$foldl,
+						_project_fuzzball$test$Test_Runner_String$toOutputHelp(labels),
+						summary,
+						_p5._0);
+			}
+		}
+	});
+var _project_fuzzball$test$Test_Runner_String$toOutput = _elm_lang$core$Basics$flip(
+	_project_fuzzball$test$Test_Runner_String$toOutputHelp(
+		_elm_lang$core$Native_List.fromArray(
+			[])));
+var _project_fuzzball$test$Test_Runner_String$runWithOptions = F3(
+	function (runs, seed, test) {
+		return A2(
+			_project_fuzzball$test$Test_Runner_String$toOutput,
+			{output: '', passed: 0, failed: 0},
+			A3(_project_fuzzball$test$Test_Runner$fromTest, runs, seed, test));
+	});
+var _project_fuzzball$test$Test_Runner_String$run = A2(_project_fuzzball$test$Test_Runner_String$runWithOptions, _project_fuzzball$test$Test_Runner_String$defaultRuns, _project_fuzzball$test$Test_Runner_String$defaultSeed);
+var _project_fuzzball$test$Test_Runner_String$Summary = F3(
+	function (a, b, c) {
+		return {output: a, passed: b, failed: c};
+	});

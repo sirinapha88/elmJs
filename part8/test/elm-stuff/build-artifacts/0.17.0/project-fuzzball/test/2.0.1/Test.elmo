@@ -1,0 +1,128 @@
+var _project_fuzzball$test$Test$uncurry5 = F2(
+	function (fn, _p0) {
+		var _p1 = _p0;
+		return A5(fn, _p1._0, _p1._1, _p1._2, _p1._3, _p1._4);
+	});
+var _project_fuzzball$test$Test$uncurry4 = F2(
+	function (fn, _p2) {
+		var _p3 = _p2;
+		return A4(fn, _p3._0, _p3._1, _p3._2, _p3._3);
+	});
+var _project_fuzzball$test$Test$uncurry3 = F2(
+	function (fn, _p4) {
+		var _p5 = _p4;
+		return A3(fn, _p5._0, _p5._1, _p5._2);
+	});
+var _project_fuzzball$test$Test$defaults = {
+	runs: 100,
+	seed: _mgold$elm_random_pcg$Random_Pcg$initialSeed(42)
+};
+var _project_fuzzball$test$Test$fuzz5 = F6(
+	function (desc, fuzzA, fuzzB, fuzzC, fuzzD, fuzzE) {
+		var fuzzer = _project_fuzzball$test$Fuzz$tuple5(
+			{ctor: '_Tuple5', _0: fuzzA, _1: fuzzB, _2: fuzzC, _3: fuzzD, _4: fuzzE});
+		return function (_p6) {
+			return A3(
+				_project_fuzzball$test$Test_Test$fuzzTest,
+				desc,
+				fuzzer,
+				_project_fuzzball$test$Test$uncurry5(_p6));
+		};
+	});
+var _project_fuzzball$test$Test$fuzz4 = F5(
+	function (fuzzA, fuzzB, fuzzC, fuzzD, desc) {
+		var fuzzer = _project_fuzzball$test$Fuzz$tuple4(
+			{ctor: '_Tuple4', _0: fuzzA, _1: fuzzB, _2: fuzzC, _3: fuzzD});
+		return function (_p7) {
+			return A3(
+				_project_fuzzball$test$Test_Test$fuzzTest,
+				desc,
+				fuzzer,
+				_project_fuzzball$test$Test$uncurry4(_p7));
+		};
+	});
+var _project_fuzzball$test$Test$fuzz3 = F4(
+	function (fuzzA, fuzzB, fuzzC, desc) {
+		var fuzzer = _project_fuzzball$test$Fuzz$tuple3(
+			{ctor: '_Tuple3', _0: fuzzA, _1: fuzzB, _2: fuzzC});
+		return function (_p8) {
+			return A3(
+				_project_fuzzball$test$Test_Test$fuzzTest,
+				desc,
+				fuzzer,
+				_project_fuzzball$test$Test$uncurry3(_p8));
+		};
+	});
+var _project_fuzzball$test$Test$fuzz2 = F3(
+	function (fuzzA, fuzzB, desc) {
+		var fuzzer = _project_fuzzball$test$Fuzz$tuple(
+			{ctor: '_Tuple2', _0: fuzzA, _1: fuzzB});
+		return function (_p9) {
+			return A3(
+				_project_fuzzball$test$Test_Test$fuzzTest,
+				desc,
+				fuzzer,
+				_elm_lang$core$Basics$uncurry(_p9));
+		};
+	});
+var _project_fuzzball$test$Test$fuzz = F2(
+	function (fuzzer, desc) {
+		return A2(_project_fuzzball$test$Test_Test$fuzzTest, desc, fuzzer);
+	});
+var _project_fuzzball$test$Test$fuzzWithHelp = F2(
+	function (options, test) {
+		var _p10 = test;
+		switch (_p10.ctor) {
+			case 'Test':
+				return _project_fuzzball$test$Test_Test$Test(
+					F2(
+						function (seed, _p11) {
+							return A2(_p10._0, seed, options.runs);
+						}));
+			case 'Labeled':
+				return A2(
+					_project_fuzzball$test$Test_Test$Labeled,
+					_p10._0,
+					A2(_project_fuzzball$test$Test$fuzzWithHelp, options, _p10._1));
+			default:
+				return _project_fuzzball$test$Test_Test$Batch(
+					A2(
+						_elm_lang$core$List$map,
+						_project_fuzzball$test$Test$fuzzWithHelp(options),
+						_p10._0));
+		}
+	});
+var _project_fuzzball$test$Test$fuzzWith = F4(
+	function (options, fuzzer, desc, getTest) {
+		return A2(
+			_project_fuzzball$test$Test$fuzzWithHelp,
+			options,
+			A3(_project_fuzzball$test$Test_Test$fuzzTest, desc, fuzzer, getTest));
+	});
+var _project_fuzzball$test$Test$test = F2(
+	function (desc, thunk) {
+		return A2(
+			_project_fuzzball$test$Test_Test$Labeled,
+			desc,
+			_project_fuzzball$test$Test_Test$Test(
+				F2(
+					function (_p13, _p12) {
+						return _elm_lang$core$Native_List.fromArray(
+							[
+								thunk(
+								{ctor: '_Tuple0'})
+							]);
+					})));
+	});
+var _project_fuzzball$test$Test$describe = function (desc) {
+	return function (_p14) {
+		return A2(
+			_project_fuzzball$test$Test_Test$Labeled,
+			desc,
+			_project_fuzzball$test$Test_Test$Batch(_p14));
+	};
+};
+var _project_fuzzball$test$Test$batch = _project_fuzzball$test$Test_Test$Batch;
+var _project_fuzzball$test$Test$FuzzOptions = function (a) {
+	return {runs: a};
+};

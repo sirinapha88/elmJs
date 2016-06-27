@@ -1,0 +1,15 @@
+var _rtfeldman$elm_workshop$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{
+			view: _rtfeldman$elm_workshop$ElmHub$view,
+			update: _rtfeldman$elm_workshop$ElmHub$update,
+			init: {
+				ctor: '_Tuple2',
+				_0: _rtfeldman$elm_workshop$ElmHub$initialModel,
+				_1: _rtfeldman$elm_workshop$ElmHub$searchFeed(_rtfeldman$elm_workshop$ElmHub$initialModel.query)
+			},
+			subscriptions: function (_p0) {
+				return _elm_lang$core$Platform_Sub$none;
+			}
+		})
+};

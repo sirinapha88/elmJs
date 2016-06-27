@@ -18,11 +18,16 @@ all =
                         """{ "pizza": [] }"""
 
                     isErrorResult result =
+                        case result of 
+                        Err _ ->
+                            True
+                        Ok _ ->
+                           False
                         -- TODO return True if the given Result is an Err of some sort,
                         -- and False if it is an Ok of some sort.
                         --
                         -- Result docs: http://package.elm-lang.org/packages/elm-lang/core/4.0.1/Result
-                        False
+                        
                 in
                     json
                         |> decodeString responseDecoder
@@ -30,9 +35,10 @@ all =
                         |> Expect.true "Expected decoding an invalid response to return an Err."
         , test "it successfully decodes a valid response"
             <| \() ->
-                """{ "items": [
-                    /* TODO: put JSON here! */
-                 ] }"""
+                """{ "items": [ { "id" : 5, "full_name" : "foo", "stargazers_count" : 42 }
+                              , { "id" : 3, "full_name" : "bar", "stargazers_count" : 77 }
+                              ]
+                              }"""
                     |> decodeString responseDecoder
                     |> Expect.equal
                         (Ok
@@ -40,9 +46,10 @@ all =
                             , { id = 3, name = "bar", stars = 77 }
                             ]
                         )
-        , test "it decodes one SearchResult for each 'item' in the JSON"
-            <| \() ->
+         ,fuzz (list int) "it decodes one SearchResult for each 'item' in the JSON"
+            <| \ids ->
                 let
+
                     -- TODO convert this to a fuzz test that generates a random
                     -- list of ids instead of this hardcoded list of three ids.
                     --

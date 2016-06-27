@@ -1,0 +1,14 @@
+var _project_fuzzball$test$Test_Expectation$Fail = function (a) {
+	return {ctor: 'Fail', _0: a};
+};
+var _project_fuzzball$test$Test_Expectation$formatFailure = F2(
+	function (format, outcome) {
+		var _p0 = outcome;
+		if (_p0.ctor === 'Fail') {
+			return _project_fuzzball$test$Test_Expectation$Fail(
+				format(_p0._0));
+		} else {
+			return outcome;
+		}
+	});
+var _project_fuzzball$test$Test_Expectation$Pass = {ctor: 'Pass'};

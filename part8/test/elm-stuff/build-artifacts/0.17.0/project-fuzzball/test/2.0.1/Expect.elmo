@@ -1,0 +1,122 @@
+var _project_fuzzball$test$Expect$compactModeLength = 64;
+var _project_fuzzball$test$Expect$withUnderline = function (str) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		str,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'\n',
+			A2(
+				_elm_lang$core$String$repeat,
+				_elm_lang$core$String$length(str),
+				'-')));
+};
+var _project_fuzzball$test$Expect$expectedCaption = 'Expected';
+var _project_fuzzball$test$Expect$reportFailure = F3(
+	function (actualCaption, expected, actual) {
+		return A2(
+			_elm_lang$core$String$join,
+			'\n',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					expected,
+					'╷',
+					A2(_elm_lang$core$Basics_ops['++'], '│ ', actualCaption),
+					'╵',
+					actual
+				]));
+	});
+var _project_fuzzball$test$Expect$getFailure = function (expectation) {
+	var _p0 = expectation;
+	if (_p0.ctor === 'Pass') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _elm_lang$core$Maybe$Just(_p0._0);
+	}
+};
+var _project_fuzzball$test$Expect$fail = _project_fuzzball$test$Test_Expectation$Fail;
+var _project_fuzzball$test$Expect$onFail = F2(
+	function (str, expectation) {
+		var _p1 = expectation;
+		if (_p1.ctor === 'Pass') {
+			return expectation;
+		} else {
+			return _project_fuzzball$test$Expect$fail(str);
+		}
+	});
+var _project_fuzzball$test$Expect$pass = _project_fuzzball$test$Test_Expectation$Pass;
+var _project_fuzzball$test$Expect$all = F2(
+	function (getExpectation, list) {
+		var _p3 = A2(
+			_elm_lang$core$List$filterMap,
+			function (_p2) {
+				return _project_fuzzball$test$Expect$getFailure(
+					getExpectation(_p2));
+			},
+			list);
+		if (_p3.ctor === '[]') {
+			return _project_fuzzball$test$Expect$pass;
+		} else {
+			return _project_fuzzball$test$Expect$fail(
+				A2(_elm_lang$core$String$join, '\n\n---\n\n', _p3));
+		}
+	});
+var _project_fuzzball$test$Expect$compareWith = F4(
+	function (label, compare, expected, actual) {
+		return A2(compare, actual, expected) ? _project_fuzzball$test$Expect$pass : _project_fuzzball$test$Expect$fail(
+			A3(
+				_project_fuzzball$test$Expect$reportFailure,
+				label,
+				_elm_lang$core$Basics$toString(expected),
+				_elm_lang$core$Basics$toString(actual)));
+	});
+var _project_fuzzball$test$Expect$false = F2(
+	function (message, bool) {
+		return bool ? _project_fuzzball$test$Expect$fail(message) : _project_fuzzball$test$Expect$pass;
+	});
+var _project_fuzzball$test$Expect$true = F2(
+	function (message, bool) {
+		return bool ? _project_fuzzball$test$Expect$pass : _project_fuzzball$test$Expect$fail(message);
+	});
+var _project_fuzzball$test$Expect$atLeast = A2(
+	_project_fuzzball$test$Expect$compareWith,
+	'Expect.atLeast',
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.cmp(x, y) > -1;
+		}));
+var _project_fuzzball$test$Expect$greaterThan = A2(
+	_project_fuzzball$test$Expect$compareWith,
+	'Expect.greaterThan',
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.cmp(x, y) > 0;
+		}));
+var _project_fuzzball$test$Expect$atMost = A2(
+	_project_fuzzball$test$Expect$compareWith,
+	'Expect.atMost',
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.cmp(x, y) < 1;
+		}));
+var _project_fuzzball$test$Expect$lessThan = A2(
+	_project_fuzzball$test$Expect$compareWith,
+	'Expect.lessThan',
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.cmp(x, y) < 0;
+		}));
+var _project_fuzzball$test$Expect$notEqual = A2(
+	_project_fuzzball$test$Expect$compareWith,
+	'Expect.notEqual',
+	F2(
+		function (x, y) {
+			return !_elm_lang$core$Native_Utils.eq(x, y);
+		}));
+var _project_fuzzball$test$Expect$equal = A2(
+	_project_fuzzball$test$Expect$compareWith,
+	'Expect.equal',
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.eq(x, y);
+		}));

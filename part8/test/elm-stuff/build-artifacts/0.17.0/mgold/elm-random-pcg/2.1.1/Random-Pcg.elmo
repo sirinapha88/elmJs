@@ -1,0 +1,706 @@
+var _mgold$elm_random_pcg$Random_Pcg$toJson = function (_p0) {
+	var _p1 = _p0;
+	return _elm_lang$core$Json_Encode$list(
+		A2(
+			_elm_lang$core$List$map,
+			_elm_lang$core$Json_Encode$int,
+			_elm_lang$core$Native_List.fromArray(
+				[_p1._0._0, _p1._0._1, _p1._1._0, _p1._1._1])));
+};
+var _mgold$elm_random_pcg$Random_Pcg$listHelp = F4(
+	function (list, n, generate, seed) {
+		listHelp:
+		while (true) {
+			if (_elm_lang$core$Native_Utils.cmp(n, 1) < 0) {
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$List$reverse(list),
+					_1: seed
+				};
+			} else {
+				var _p2 = generate(seed);
+				var value = _p2._0;
+				var newSeed = _p2._1;
+				var _v1 = A2(_elm_lang$core$List_ops['::'], value, list),
+					_v2 = n - 1,
+					_v3 = generate,
+					_v4 = newSeed;
+				list = _v1;
+				n = _v2;
+				generate = _v3;
+				seed = _v4;
+				continue listHelp;
+			}
+		}
+	});
+var _mgold$elm_random_pcg$Random_Pcg$minInt = -2147483648;
+var _mgold$elm_random_pcg$Random_Pcg$maxInt = 2147483647;
+var _mgold$elm_random_pcg$Random_Pcg$bit27 = 1.34217728e8;
+var _mgold$elm_random_pcg$Random_Pcg$bit53 = 9.007199254740992e15;
+var _mgold$elm_random_pcg$Random_Pcg$step = F2(
+	function (_p3, seed) {
+		var _p4 = _p3;
+		return _p4._0(seed);
+	});
+var _mgold$elm_random_pcg$Random_Pcg_ops = _mgold$elm_random_pcg$Random_Pcg_ops || {};
+_mgold$elm_random_pcg$Random_Pcg_ops['>>>'] = _elm_lang$core$Bitwise$shiftRightLogical;
+var _mgold$elm_random_pcg$Random_Pcg_ops = _mgold$elm_random_pcg$Random_Pcg_ops || {};
+_mgold$elm_random_pcg$Random_Pcg_ops['<<'] = _elm_lang$core$Bitwise$shiftLeft;
+var _mgold$elm_random_pcg$Random_Pcg_ops = _mgold$elm_random_pcg$Random_Pcg_ops || {};
+_mgold$elm_random_pcg$Random_Pcg_ops['&'] = _elm_lang$core$Bitwise$and;
+var _mgold$elm_random_pcg$Random_Pcg$peel = function (_p5) {
+	var _p6 = _p5;
+	var _p8 = _p6._0._1;
+	var _p7 = _p6._0._0;
+	var rot = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p7, 27);
+	var rot2 = A2(
+		_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+		A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['&'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], 0 - rot, 0),
+			31),
+		0);
+	var xsLo = A2(
+		_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+		A2(
+			_elm_lang$core$Bitwise$or,
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p8, 18),
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['<<'], _p7, 14)),
+		0);
+	var xsLo$ = A2(
+		_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+		A2(_elm_lang$core$Bitwise$xor, xsLo, _p8),
+		0);
+	var xsHi = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p7, 18);
+	var xsHi$ = A2(
+		_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+		A2(_elm_lang$core$Bitwise$xor, xsHi, _p7),
+		0);
+	var xorshifted = A2(
+		_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+		A2(
+			_elm_lang$core$Bitwise$or,
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], xsLo$, 27),
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['<<'], xsHi$, 5)),
+		0);
+	return A2(
+		_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+		A2(
+			_elm_lang$core$Bitwise$or,
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], xorshifted, rot),
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['<<'], xorshifted, rot2)),
+		0);
+};
+var _mgold$elm_random_pcg$Random_Pcg$mul32 = F2(
+	function (a, b) {
+		var bl = A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], b, 65535);
+		var bh = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['&'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], b, 16),
+			65535);
+		var al = A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], a, 65535);
+		var ah = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['&'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], a, 16),
+			65535);
+		return A2(
+			_elm_lang$core$Bitwise$or,
+			0,
+			(al * bl) + A2(
+				_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+				A2(_mgold$elm_random_pcg$Random_Pcg_ops['<<'], (ah * bl) + (al * bh), 16),
+				0));
+	});
+var _mgold$elm_random_pcg$Random_Pcg$Int64 = F2(
+	function (a, b) {
+		return {ctor: 'Int64', _0: a, _1: b};
+	});
+var _mgold$elm_random_pcg$Random_Pcg$magicFactor = A2(_mgold$elm_random_pcg$Random_Pcg$Int64, 1481765933, 1284865837);
+var _mgold$elm_random_pcg$Random_Pcg$mul64 = F2(
+	function (_p10, _p9) {
+		var _p11 = _p10;
+		var _p14 = _p11._1;
+		var _p12 = _p9;
+		var _p13 = _p12._1;
+		var lo = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], _p14, 65535) * A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], _p13, 65535),
+			0);
+		var c0 = A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], _p14, 65535) * A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p13, 16),
+			0);
+		var c0$ = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['<<'], c0, 16),
+			0);
+		var lo$ = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], lo + c0$, 0);
+		var c1 = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p14, 16) * A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], _p13, 65535),
+			0);
+		var hi = (A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p14, 16) * A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p13, 16)) + A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], c0, 16) + A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], c1, 16),
+			0);
+		var hi$ = (_elm_lang$core$Native_Utils.cmp(
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], lo$, 0),
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], c0$, 0)) < 0) ? A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], hi + 1, 0) : hi;
+		var c1$ = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['<<'], c1, 16),
+			0);
+		var lo$$ = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], lo$ + c1$, 0);
+		var hi$$ = (_elm_lang$core$Native_Utils.cmp(
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], lo$$, 0),
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], c1$, 0)) < 0) ? A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], hi$ + 1, 0) : hi$;
+		var hi$$$ = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			hi$$ + A2(_mgold$elm_random_pcg$Random_Pcg$mul32, _p14, _p12._0),
+			0);
+		var hi$$$$ = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			hi$$$ + A2(_mgold$elm_random_pcg$Random_Pcg$mul32, _p11._0, _p13),
+			0);
+		return A2(_mgold$elm_random_pcg$Random_Pcg$Int64, hi$$$$, lo$$);
+	});
+var _mgold$elm_random_pcg$Random_Pcg$add64 = F2(
+	function (_p16, _p15) {
+		var _p17 = _p16;
+		var _p19 = _p17._1;
+		var _p18 = _p15;
+		var lo = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p19 + _p18._1, 0);
+		var hi = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p17._0 + _p18._0, 0);
+		var hi$ = (_elm_lang$core$Native_Utils.cmp(
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], lo, 0),
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], _p19, 0)) < 0) ? A2(_elm_lang$core$Bitwise$or, hi + 1, 0) : hi;
+		return A2(_mgold$elm_random_pcg$Random_Pcg$Int64, hi$, lo);
+	});
+var _mgold$elm_random_pcg$Random_Pcg$Generator = function (a) {
+	return {ctor: 'Generator', _0: a};
+};
+var _mgold$elm_random_pcg$Random_Pcg$list = F2(
+	function (n, _p20) {
+		var _p21 = _p20;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed) {
+				return A4(
+					_mgold$elm_random_pcg$Random_Pcg$listHelp,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					n,
+					_p21._0,
+					seed);
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$constant = function (value) {
+	return _mgold$elm_random_pcg$Random_Pcg$Generator(
+		function (seed) {
+			return {ctor: '_Tuple2', _0: value, _1: seed};
+		});
+};
+var _mgold$elm_random_pcg$Random_Pcg$map = F2(
+	function (func, _p22) {
+		var _p23 = _p22;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				var _p24 = _p23._0(seed0);
+				var a = _p24._0;
+				var seed1 = _p24._1;
+				return {
+					ctor: '_Tuple2',
+					_0: func(a),
+					_1: seed1
+				};
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$map2 = F3(
+	function (func, _p26, _p25) {
+		var _p27 = _p26;
+		var _p28 = _p25;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				var _p29 = _p27._0(seed0);
+				var a = _p29._0;
+				var seed1 = _p29._1;
+				var _p30 = _p28._0(seed1);
+				var b = _p30._0;
+				var seed2 = _p30._1;
+				return {
+					ctor: '_Tuple2',
+					_0: A2(func, a, b),
+					_1: seed2
+				};
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$pair = F2(
+	function (genA, genB) {
+		return A3(
+			_mgold$elm_random_pcg$Random_Pcg$map2,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			genA,
+			genB);
+	});
+var _mgold$elm_random_pcg$Random_Pcg$andMap = _mgold$elm_random_pcg$Random_Pcg$map2(
+	F2(
+		function (x, y) {
+			return x(y);
+		}));
+var _mgold$elm_random_pcg$Random_Pcg$map3 = F4(
+	function (func, _p33, _p32, _p31) {
+		var _p34 = _p33;
+		var _p35 = _p32;
+		var _p36 = _p31;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				var _p37 = _p34._0(seed0);
+				var a = _p37._0;
+				var seed1 = _p37._1;
+				var _p38 = _p35._0(seed1);
+				var b = _p38._0;
+				var seed2 = _p38._1;
+				var _p39 = _p36._0(seed2);
+				var c = _p39._0;
+				var seed3 = _p39._1;
+				return {
+					ctor: '_Tuple2',
+					_0: A3(func, a, b, c),
+					_1: seed3
+				};
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$map4 = F5(
+	function (func, _p43, _p42, _p41, _p40) {
+		var _p44 = _p43;
+		var _p45 = _p42;
+		var _p46 = _p41;
+		var _p47 = _p40;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				var _p48 = _p44._0(seed0);
+				var a = _p48._0;
+				var seed1 = _p48._1;
+				var _p49 = _p45._0(seed1);
+				var b = _p49._0;
+				var seed2 = _p49._1;
+				var _p50 = _p46._0(seed2);
+				var c = _p50._0;
+				var seed3 = _p50._1;
+				var _p51 = _p47._0(seed3);
+				var d = _p51._0;
+				var seed4 = _p51._1;
+				return {
+					ctor: '_Tuple2',
+					_0: A4(func, a, b, c, d),
+					_1: seed4
+				};
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$map5 = F6(
+	function (func, _p56, _p55, _p54, _p53, _p52) {
+		var _p57 = _p56;
+		var _p58 = _p55;
+		var _p59 = _p54;
+		var _p60 = _p53;
+		var _p61 = _p52;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				var _p62 = _p57._0(seed0);
+				var a = _p62._0;
+				var seed1 = _p62._1;
+				var _p63 = _p58._0(seed1);
+				var b = _p63._0;
+				var seed2 = _p63._1;
+				var _p64 = _p59._0(seed2);
+				var c = _p64._0;
+				var seed3 = _p64._1;
+				var _p65 = _p60._0(seed3);
+				var d = _p65._0;
+				var seed4 = _p65._1;
+				var _p66 = _p61._0(seed4);
+				var e = _p66._0;
+				var seed5 = _p66._1;
+				return {
+					ctor: '_Tuple2',
+					_0: A5(func, a, b, c, d, e),
+					_1: seed5
+				};
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$andThen = F2(
+	function (_p67, callback) {
+		var _p68 = _p67;
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed) {
+				var _p69 = _p68._0(seed);
+				var result = _p69._0;
+				var newSeed = _p69._1;
+				var _p70 = callback(result);
+				var generateB = _p70._0;
+				return generateB(newSeed);
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$filter = F2(
+	function (predicate, generator) {
+		return A2(
+			_mgold$elm_random_pcg$Random_Pcg$andThen,
+			generator,
+			function (a) {
+				return predicate(a) ? _mgold$elm_random_pcg$Random_Pcg$constant(a) : A2(_mgold$elm_random_pcg$Random_Pcg$filter, predicate, generator);
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$maybe = F2(
+	function (genBool, genA) {
+		return A2(
+			_mgold$elm_random_pcg$Random_Pcg$andThen,
+			genBool,
+			function (b) {
+				return b ? A2(_mgold$elm_random_pcg$Random_Pcg$map, _elm_lang$core$Maybe$Just, genA) : _mgold$elm_random_pcg$Random_Pcg$constant(_elm_lang$core$Maybe$Nothing);
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$Seed = F2(
+	function (a, b) {
+		return {ctor: 'Seed', _0: a, _1: b};
+	});
+var _mgold$elm_random_pcg$Random_Pcg$next = function (_p71) {
+	var _p72 = _p71;
+	var _p73 = _p72._1;
+	var state1 = A2(_mgold$elm_random_pcg$Random_Pcg$mul64, _p72._0, _mgold$elm_random_pcg$Random_Pcg$magicFactor);
+	var state2 = A2(_mgold$elm_random_pcg$Random_Pcg$add64, state1, _p73);
+	return A2(_mgold$elm_random_pcg$Random_Pcg$Seed, state2, _p73);
+};
+var _mgold$elm_random_pcg$Random_Pcg$initialSeed2 = F2(
+	function (stateHi, stateLo) {
+		var incr = A2(_mgold$elm_random_pcg$Random_Pcg$Int64, 335903614, 4150755663);
+		var seed0 = A2(
+			_mgold$elm_random_pcg$Random_Pcg$Seed,
+			A2(_mgold$elm_random_pcg$Random_Pcg$Int64, 0, 0),
+			incr);
+		var _p74 = _mgold$elm_random_pcg$Random_Pcg$next(seed0);
+		var state1 = _p74._0;
+		var state2 = A2(
+			_mgold$elm_random_pcg$Random_Pcg$add64,
+			state1,
+			A2(
+				_mgold$elm_random_pcg$Random_Pcg$Int64,
+				A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], stateHi, 0),
+				A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], stateLo, 0)));
+		return _mgold$elm_random_pcg$Random_Pcg$next(
+			A2(_mgold$elm_random_pcg$Random_Pcg$Seed, state2, incr));
+	});
+var _mgold$elm_random_pcg$Random_Pcg$initialSeed = function (i) {
+	return A2(_mgold$elm_random_pcg$Random_Pcg$initialSeed2, i, 0);
+};
+var _mgold$elm_random_pcg$Random_Pcg$integer = F2(
+	function (max, seed0) {
+		if (_elm_lang$core$Native_Utils.eq(
+			A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], max, max - 1),
+			0)) {
+			return {
+				ctor: '_Tuple2',
+				_0: A2(
+					_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+					A2(
+						_mgold$elm_random_pcg$Random_Pcg_ops['&'],
+						_mgold$elm_random_pcg$Random_Pcg$peel(seed0),
+						max - 1),
+					0),
+				_1: _mgold$elm_random_pcg$Random_Pcg$next(seed0)
+			};
+		} else {
+			var threshhold = A2(
+				_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+				A2(
+					_elm_lang$core$Basics_ops['%'],
+					A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], 0 - max, 0),
+					max),
+				0);
+			var accountForBias = function (seed) {
+				accountForBias:
+				while (true) {
+					var seedN = _mgold$elm_random_pcg$Random_Pcg$next(seed);
+					var x = _mgold$elm_random_pcg$Random_Pcg$peel(seed);
+					if (_elm_lang$core$Native_Utils.cmp(x, threshhold) < 0) {
+						var _v29 = seedN;
+						seed = _v29;
+						continue accountForBias;
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: A2(_elm_lang$core$Basics_ops['%'], x, max),
+							_1: seedN
+						};
+					}
+				}
+			};
+			return accountForBias(seed0);
+		}
+	});
+var _mgold$elm_random_pcg$Random_Pcg$int = F2(
+	function (min, max) {
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				if (_elm_lang$core$Native_Utils.eq(min, max)) {
+					return {ctor: '_Tuple2', _0: min, _1: seed0};
+				} else {
+					var range = _elm_lang$core$Basics$abs(max - min) + 1;
+					var _p75 = A2(_mgold$elm_random_pcg$Random_Pcg$integer, range, seed0);
+					var i = _p75._0;
+					var seed1 = _p75._1;
+					return {ctor: '_Tuple2', _0: i + min, _1: seed1};
+				}
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$bool = A2(
+	_mgold$elm_random_pcg$Random_Pcg$map,
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.eq(x, y);
+		})(1),
+	A2(_mgold$elm_random_pcg$Random_Pcg$int, 0, 1));
+var _mgold$elm_random_pcg$Random_Pcg$choice = F2(
+	function (x, y) {
+		return A2(
+			_mgold$elm_random_pcg$Random_Pcg$map,
+			function (b) {
+				return b ? x : y;
+			},
+			_mgold$elm_random_pcg$Random_Pcg$bool);
+	});
+var _mgold$elm_random_pcg$Random_Pcg$oneIn = function (n) {
+	return A2(
+		_mgold$elm_random_pcg$Random_Pcg$map,
+		F2(
+			function (x, y) {
+				return _elm_lang$core$Native_Utils.eq(x, y);
+			})(1),
+		A2(_mgold$elm_random_pcg$Random_Pcg$int, 1, n));
+};
+var _mgold$elm_random_pcg$Random_Pcg$sample = function () {
+	var find = F2(
+		function (k, ys) {
+			find:
+			while (true) {
+				var _p76 = ys;
+				if (_p76.ctor === '[]') {
+					return _elm_lang$core$Maybe$Nothing;
+				} else {
+					if (_elm_lang$core$Native_Utils.eq(k, 0)) {
+						return _elm_lang$core$Maybe$Just(_p76._0);
+					} else {
+						var _v31 = k - 1,
+							_v32 = _p76._1;
+						k = _v31;
+						ys = _v32;
+						continue find;
+					}
+				}
+			}
+		});
+	return function (xs) {
+		return A2(
+			_mgold$elm_random_pcg$Random_Pcg$map,
+			function (i) {
+				return A2(find, i, xs);
+			},
+			A2(
+				_mgold$elm_random_pcg$Random_Pcg$int,
+				0,
+				_elm_lang$core$List$length(xs) - 1));
+	};
+}();
+var _mgold$elm_random_pcg$Random_Pcg$float = F2(
+	function (min, max) {
+		return _mgold$elm_random_pcg$Random_Pcg$Generator(
+			function (seed0) {
+				var range = _elm_lang$core$Basics$abs(max - min);
+				var n0 = _mgold$elm_random_pcg$Random_Pcg$peel(seed0);
+				var hi = _elm_lang$core$Basics$toFloat(
+					A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], n0, 67108863)) * 1.0;
+				var seed1 = _mgold$elm_random_pcg$Random_Pcg$next(seed0);
+				var n1 = _mgold$elm_random_pcg$Random_Pcg$peel(seed1);
+				var lo = _elm_lang$core$Basics$toFloat(
+					A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], n1, 134217727)) * 1.0;
+				var val = ((hi * _mgold$elm_random_pcg$Random_Pcg$bit27) + lo) / _mgold$elm_random_pcg$Random_Pcg$bit53;
+				var scaled = (val * range) + min;
+				return {
+					ctor: '_Tuple2',
+					_0: scaled,
+					_1: _mgold$elm_random_pcg$Random_Pcg$next(seed1)
+				};
+			});
+	});
+var _mgold$elm_random_pcg$Random_Pcg$frequency = function (pairs) {
+	var pick = F2(
+		function (choices, n) {
+			pick:
+			while (true) {
+				var _p77 = choices;
+				if ((_p77.ctor === '::') && (_p77._0.ctor === '_Tuple2')) {
+					var _p78 = _p77._0._0;
+					if (_elm_lang$core$Native_Utils.cmp(n, _p78) < 1) {
+						return _p77._0._1;
+					} else {
+						var _v34 = _p77._1,
+							_v35 = n - _p78;
+						choices = _v34;
+						n = _v35;
+						continue pick;
+					}
+				} else {
+					return _elm_lang$core$Native_Utils.crashCase(
+						'Random.Pcg',
+						{
+							start: {line: 835, column: 13},
+							end: {line: 843, column: 77}
+						},
+						_p77)('Empty list passed to Random.Pcg.frequency!');
+				}
+			}
+		});
+	var total = _elm_lang$core$List$sum(
+		A2(
+			_elm_lang$core$List$map,
+			function (_p80) {
+				return _elm_lang$core$Basics$abs(
+					_elm_lang$core$Basics$fst(_p80));
+			},
+			pairs));
+	return A2(
+		_mgold$elm_random_pcg$Random_Pcg$andThen,
+		A2(_mgold$elm_random_pcg$Random_Pcg$float, 0, total),
+		pick(pairs));
+};
+var _mgold$elm_random_pcg$Random_Pcg$choices = function (gens) {
+	return _mgold$elm_random_pcg$Random_Pcg$frequency(
+		A2(
+			_elm_lang$core$List$map,
+			function (g) {
+				return {ctor: '_Tuple2', _0: 1, _1: g};
+			},
+			gens));
+};
+var _mgold$elm_random_pcg$Random_Pcg$independentSeed = _mgold$elm_random_pcg$Random_Pcg$Generator(
+	function (seed0) {
+		var gen1 = A2(_mgold$elm_random_pcg$Random_Pcg$int, 0, 4294967295);
+		var gen4 = A5(
+			_mgold$elm_random_pcg$Random_Pcg$map4,
+			F4(
+				function (v0, v1, v2, v3) {
+					return {ctor: '_Tuple4', _0: v0, _1: v1, _2: v2, _3: v3};
+				}),
+			gen1,
+			gen1,
+			gen1,
+			gen1);
+		var _p81 = A2(_mgold$elm_random_pcg$Random_Pcg$step, gen4, seed0);
+		var a = _p81._0._0;
+		var b = _p81._0._1;
+		var c = _p81._0._2;
+		var d = _p81._0._3;
+		var seed1 = _p81._1;
+		var dOdd = A2(
+			_mgold$elm_random_pcg$Random_Pcg_ops['>>>'],
+			A2(_elm_lang$core$Bitwise$or, d, 1),
+			0);
+		var seed2 = A2(
+			_mgold$elm_random_pcg$Random_Pcg$Seed,
+			A2(_mgold$elm_random_pcg$Random_Pcg$Int64, a, b),
+			A2(_mgold$elm_random_pcg$Random_Pcg$Int64, c, dOdd));
+		return {
+			ctor: '_Tuple2',
+			_0: _mgold$elm_random_pcg$Random_Pcg$next(seed2),
+			_1: _mgold$elm_random_pcg$Random_Pcg$next(seed1)
+		};
+	});
+var _mgold$elm_random_pcg$Random_Pcg$fastForward = F2(
+	function (delta0, _p82) {
+		var _p83 = _p82;
+		var _p85 = _p83._1;
+		var zero = A2(_mgold$elm_random_pcg$Random_Pcg$Int64, 0, 0);
+		var one = A2(_mgold$elm_random_pcg$Random_Pcg$Int64, 0, 1);
+		var helper = F6(
+			function (accMult, accPlus, curMult, curPlus, delta, repeat) {
+				helper:
+				while (true) {
+					var newDelta = A2(_mgold$elm_random_pcg$Random_Pcg_ops['>>>'], delta, 1);
+					var curMult$ = A2(_mgold$elm_random_pcg$Random_Pcg$mul64, curMult, curMult);
+					var curPlus$ = A2(
+						_mgold$elm_random_pcg$Random_Pcg$mul64,
+						A2(_mgold$elm_random_pcg$Random_Pcg$add64, curMult, one),
+						curPlus);
+					var deltaOdd = _elm_lang$core$Native_Utils.eq(
+						A2(_mgold$elm_random_pcg$Random_Pcg_ops['&'], delta, 1),
+						1);
+					var accMult$ = deltaOdd ? A2(_mgold$elm_random_pcg$Random_Pcg$mul64, accMult, curMult) : accMult;
+					var accPlus$ = deltaOdd ? A2(
+						_mgold$elm_random_pcg$Random_Pcg$add64,
+						A2(_mgold$elm_random_pcg$Random_Pcg$mul64, accPlus, curMult),
+						curPlus) : accPlus;
+					if (_elm_lang$core$Native_Utils.eq(newDelta, 0)) {
+						if ((_elm_lang$core$Native_Utils.cmp(delta0, 0) < 0) && repeat) {
+							var _v37 = accMult$,
+								_v38 = accPlus$,
+								_v39 = curMult$,
+								_v40 = curPlus$,
+								_v41 = -1,
+								_v42 = false;
+							accMult = _v37;
+							accPlus = _v38;
+							curMult = _v39;
+							curPlus = _v40;
+							delta = _v41;
+							repeat = _v42;
+							continue helper;
+						} else {
+							return {ctor: '_Tuple2', _0: accMult$, _1: accPlus$};
+						}
+					} else {
+						var _v43 = accMult$,
+							_v44 = accPlus$,
+							_v45 = curMult$,
+							_v46 = curPlus$,
+							_v47 = newDelta,
+							_v48 = repeat;
+						accMult = _v43;
+						accPlus = _v44;
+						curMult = _v45;
+						curPlus = _v46;
+						delta = _v47;
+						repeat = _v48;
+						continue helper;
+					}
+				}
+			});
+		var _p84 = A6(helper, one, zero, _mgold$elm_random_pcg$Random_Pcg$magicFactor, _p85, delta0, true);
+		var accMultFinal = _p84._0;
+		var accPlusFinal = _p84._1;
+		var state1 = A2(
+			_mgold$elm_random_pcg$Random_Pcg$add64,
+			accPlusFinal,
+			A2(_mgold$elm_random_pcg$Random_Pcg$mul64, accMultFinal, _p83._0));
+		return A2(_mgold$elm_random_pcg$Random_Pcg$Seed, state1, _p85);
+	});
+var _mgold$elm_random_pcg$Random_Pcg$fromJson = _elm_lang$core$Json_Decode$oneOf(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A5(
+			_elm_lang$core$Json_Decode$tuple4,
+			F4(
+				function (a, b, c, d) {
+					return A2(
+						_mgold$elm_random_pcg$Random_Pcg$Seed,
+						A2(_mgold$elm_random_pcg$Random_Pcg$Int64, a, b),
+						A2(_mgold$elm_random_pcg$Random_Pcg$Int64, c, d));
+				}),
+			_elm_lang$core$Json_Decode$int,
+			_elm_lang$core$Json_Decode$int,
+			_elm_lang$core$Json_Decode$int,
+			_elm_lang$core$Json_Decode$int),
+			A3(_elm_lang$core$Json_Decode$tuple2, _mgold$elm_random_pcg$Random_Pcg$initialSeed2, _elm_lang$core$Json_Decode$int, _elm_lang$core$Json_Decode$int),
+			A2(_elm_lang$core$Json_Decode$tuple1, _mgold$elm_random_pcg$Random_Pcg$initialSeed, _elm_lang$core$Json_Decode$int),
+			A2(_elm_lang$core$Json_Decode$map, _mgold$elm_random_pcg$Random_Pcg$initialSeed, _elm_lang$core$Json_Decode$int)
+		]));

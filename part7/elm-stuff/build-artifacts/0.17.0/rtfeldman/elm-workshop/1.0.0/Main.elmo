@@ -1,0 +1,31 @@
+var _rtfeldman$elm_workshop$Main$decodeResponse = function (json) {
+	var _p0 = A2(_elm_lang$core$Json_Decode$decodeValue, _rtfeldman$elm_workshop$ElmHub$responseDecoder, json);
+	if (_p0.ctor === 'Err') {
+		return _rtfeldman$elm_workshop$ElmHub$HandleSearchError(
+			_elm_lang$core$Maybe$Just(_p0._0));
+	} else {
+		return _rtfeldman$elm_workshop$ElmHub$HandleSearchResponse(_p0._0);
+	}
+};
+var _rtfeldman$elm_workshop$Main$githubSearch = _elm_lang$core$Native_Platform.outgoingPort(
+	'githubSearch',
+	function (v) {
+		return v;
+	});
+var _rtfeldman$elm_workshop$Main$githubResponse = _elm_lang$core$Native_Platform.incomingPort('githubResponse', _elm_lang$core$Json_Decode$value);
+var _rtfeldman$elm_workshop$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{
+			view: _rtfeldman$elm_workshop$ElmHub$view,
+			update: _rtfeldman$elm_workshop$ElmHub$update(_rtfeldman$elm_workshop$Main$githubSearch),
+			init: {
+				ctor: '_Tuple2',
+				_0: _rtfeldman$elm_workshop$ElmHub$initialModel,
+				_1: _rtfeldman$elm_workshop$Main$githubSearch(
+					_rtfeldman$elm_workshop$ElmHub$getQueryString(_rtfeldman$elm_workshop$ElmHub$initialModel.query))
+			},
+			subscriptions: function (_p1) {
+				return _rtfeldman$elm_workshop$Main$githubResponse(_rtfeldman$elm_workshop$Main$decodeResponse);
+			}
+		})
+};

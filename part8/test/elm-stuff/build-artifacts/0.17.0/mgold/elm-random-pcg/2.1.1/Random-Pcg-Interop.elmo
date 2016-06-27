@@ -1,0 +1,11 @@
+var _mgold$elm_random_pcg$Random_Pcg_Interop$fission = function (stdSeed0) {
+	var gen = A2(_elm_lang$core$Random$int, 0, 4294967295);
+	var _p0 = A2(_elm_lang$core$Random$step, gen, stdSeed0);
+	var a = _p0._0;
+	var stdSeed1 = _p0._1;
+	var _p1 = A2(_elm_lang$core$Random$step, gen, stdSeed1);
+	var b = _p1._0;
+	var stdSeed2 = _p1._1;
+	var pcgSeed1 = A2(_mgold$elm_random_pcg$Random_Pcg$initialSeed2, a, b);
+	return {ctor: '_Tuple2', _0: pcgSeed1, _1: stdSeed2};
+};

@@ -1,0 +1,140 @@
+var _project_fuzzball$test$Test_Test$isFail = F2(
+	function (x, y) {
+		return !_elm_lang$core$Native_Utils.eq(x, y);
+	})(_project_fuzzball$test$Test_Expectation$Pass);
+var _project_fuzzball$test$Test_Test$prependInput = F2(
+	function (input, original) {
+		var _p0 = input;
+		if (_p0.ctor === 'Nothing') {
+			return original;
+		} else {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'► Given ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p0._0,
+					A2(_elm_lang$core$Basics_ops['++'], '\n\n', original)));
+		}
+	});
+var _project_fuzzball$test$Test_Test$dedupe = function (pairs) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (_p1) {
+			var _p2 = _p1;
+			var _p3 = _p2._0;
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.eq(_p3, '') ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(_p3),
+				_1: _p2._1
+			};
+		},
+		_elm_lang$core$Dict$toList(
+			_elm_lang$core$Dict$fromList(
+				A2(
+					_elm_lang$core$List$map,
+					function (_p4) {
+						var _p5 = _p4;
+						return {
+							ctor: '_Tuple2',
+							_0: A2(_elm_lang$core$Maybe$withDefault, '', _p5._0),
+							_1: _p5._1
+						};
+					},
+					pairs))));
+};
+var _project_fuzzball$test$Test_Test$formatExpectation = function (_p6) {
+	var _p7 = _p6;
+	return A2(
+		_project_fuzzball$test$Test_Expectation$formatFailure,
+		_project_fuzzball$test$Test_Test$prependInput(_p7._0),
+		_p7._1);
+};
+var _project_fuzzball$test$Test_Test$Batch = function (a) {
+	return {ctor: 'Batch', _0: a};
+};
+var _project_fuzzball$test$Test_Test$Labeled = F2(
+	function (a, b) {
+		return {ctor: 'Labeled', _0: a, _1: b};
+	});
+var _project_fuzzball$test$Test_Test$Test = function (a) {
+	return {ctor: 'Test', _0: a};
+};
+var _project_fuzzball$test$Test_Test$fuzzTest = F3(
+	function (desc, fuzzer, getOutcome) {
+		var run = F2(
+			function (seed, runs) {
+				if (_elm_lang$core$Native_Utils.cmp(runs, 1) < 0) {
+					return _elm_lang$core$Native_List.fromArray(
+						[
+							_project_fuzzball$test$Test_Expectation$Fail(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Fuzz test run count must be at least 1, not ',
+								_elm_lang$core$Basics$toString(runs)))
+						]);
+				} else {
+					var runWithInput = function (val) {
+						return {
+							ctor: '_Tuple2',
+							_0: val,
+							_1: getOutcome(val)
+						};
+					};
+					var generators = A2(
+						_mgold$elm_random_pcg$Random_Pcg$map,
+						_elm_lang$core$List$map(runWithInput),
+						A2(_mgold$elm_random_pcg$Random_Pcg$list, runs, fuzzer.generator));
+					var _p8 = A2(_mgold$elm_random_pcg$Random_Pcg$step, generators, seed);
+					var pairs = _p8._0;
+					if (A2(
+						_elm_lang$core$List$all,
+						function (_p9) {
+							var _p10 = _p9;
+							return _elm_lang$core$Native_Utils.eq(_p10._1, _project_fuzzball$test$Test_Expectation$Pass);
+						},
+						pairs)) {
+						return _elm_lang$core$Native_List.fromArray(
+							[_project_fuzzball$test$Test_Expectation$Pass]);
+					} else {
+						var shrink = function (_p11) {
+							var _p12 = _p11;
+							var _p15 = _p12._0;
+							var _p14 = _p12._1;
+							if (_project_fuzzball$test$Test_Test$isFail(_p14)) {
+								var shrunkenVal = A3(
+									_elm_community$shrink$Shrink$shrink,
+									function (_p13) {
+										return _project_fuzzball$test$Test_Test$isFail(
+											getOutcome(_p13));
+									},
+									fuzzer.shrinker,
+									_p15);
+								return {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Maybe$Just(
+										_elm_lang$core$Basics$toString(shrunkenVal)),
+									_1: getOutcome(shrunkenVal)
+								};
+							} else {
+								return {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Maybe$Just(
+										_elm_lang$core$Basics$toString(_p15)),
+									_1: _p14
+								};
+							}
+						};
+						return A2(
+							_elm_lang$core$List$map,
+							_project_fuzzball$test$Test_Test$formatExpectation,
+							_project_fuzzball$test$Test_Test$dedupe(
+								A2(_elm_lang$core$List$map, shrink, pairs)));
+					}
+				}
+			});
+		return A2(
+			_project_fuzzball$test$Test_Test$Labeled,
+			desc,
+			_project_fuzzball$test$Test_Test$Test(run));
+	});

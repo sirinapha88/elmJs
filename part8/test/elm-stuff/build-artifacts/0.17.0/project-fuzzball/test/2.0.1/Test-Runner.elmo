@@ -1,0 +1,122 @@
+var _project_fuzzball$test$Test_Runner$run = function (_p0) {
+	var _p1 = _p0;
+	return _p1._0(
+		{ctor: '_Tuple0'});
+};
+var _project_fuzzball$test$Test_Runner$Thunk = function (a) {
+	return {ctor: 'Thunk', _0: a};
+};
+var _project_fuzzball$test$Test_Runner$Batch = function (a) {
+	return {ctor: 'Batch', _0: a};
+};
+var _project_fuzzball$test$Test_Runner$Labeled = F2(
+	function (a, b) {
+		return {ctor: 'Labeled', _0: a, _1: b};
+	});
+var _project_fuzzball$test$Test_Runner$Runnable = function (a) {
+	return {ctor: 'Runnable', _0: a};
+};
+var _project_fuzzball$test$Test_Runner$distributeSeeds = F3(
+	function (runs, test, _p2) {
+		var _p3 = _p2;
+		var _p11 = _p3._0;
+		var _p10 = _p3._1;
+		var _p4 = test;
+		switch (_p4.ctor) {
+			case 'Test':
+				var _p5 = A2(_mgold$elm_random_pcg$Random_Pcg$step, _mgold$elm_random_pcg$Random_Pcg$independentSeed, _p11);
+				var seed = _p5._0;
+				var nextSeed = _p5._1;
+				return {
+					ctor: '_Tuple2',
+					_0: nextSeed,
+					_1: A2(
+						_elm_lang$core$Basics_ops['++'],
+						_p10,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_project_fuzzball$test$Test_Runner$Runnable(
+								_project_fuzzball$test$Test_Runner$Thunk(
+									function (_p6) {
+										var _p7 = _p6;
+										return A2(_p4._0, seed, runs);
+									}))
+							]))
+				};
+			case 'Labeled':
+				var _p8 = A3(
+					_project_fuzzball$test$Test_Runner$distributeSeeds,
+					runs,
+					_p4._1,
+					{
+						ctor: '_Tuple2',
+						_0: _p11,
+						_1: _elm_lang$core$Native_List.fromArray(
+							[])
+					});
+				var nextSeed = _p8._0;
+				var nextRunners = _p8._1;
+				var finalRunners = A2(
+					_elm_lang$core$List$map,
+					_project_fuzzball$test$Test_Runner$Labeled(_p4._0),
+					nextRunners);
+				return {
+					ctor: '_Tuple2',
+					_0: nextSeed,
+					_1: A2(_elm_lang$core$Basics_ops['++'], _p10, finalRunners)
+				};
+			default:
+				var _p9 = A3(
+					_elm_lang$core$List$foldl,
+					_project_fuzzball$test$Test_Runner$distributeSeeds(runs),
+					{
+						ctor: '_Tuple2',
+						_0: _p11,
+						_1: _elm_lang$core$Native_List.fromArray(
+							[])
+					},
+					_p4._0);
+				var nextSeed = _p9._0;
+				var nextRunners = _p9._1;
+				return {
+					ctor: '_Tuple2',
+					_0: nextSeed,
+					_1: _elm_lang$core$Native_List.fromArray(
+						[
+							_project_fuzzball$test$Test_Runner$Batch(
+							A2(_elm_lang$core$Basics_ops['++'], _p10, nextRunners))
+						])
+				};
+		}
+	});
+var _project_fuzzball$test$Test_Runner$fromTest = F3(
+	function (runs, seed, test) {
+		var _p12 = test;
+		switch (_p12.ctor) {
+			case 'Test':
+				return _project_fuzzball$test$Test_Runner$Runnable(
+					_project_fuzzball$test$Test_Runner$Thunk(
+						function (_p13) {
+							var _p14 = _p13;
+							return A2(_p12._0, seed, runs);
+						}));
+			case 'Labeled':
+				return A2(
+					_project_fuzzball$test$Test_Runner$Labeled,
+					_p12._0,
+					A3(_project_fuzzball$test$Test_Runner$fromTest, runs, seed, _p12._1));
+			default:
+				return _project_fuzzball$test$Test_Runner$Batch(
+					_elm_lang$core$Basics$snd(
+						A3(
+							_elm_lang$core$List$foldl,
+							_project_fuzzball$test$Test_Runner$distributeSeeds(runs),
+							{
+								ctor: '_Tuple2',
+								_0: seed,
+								_1: _elm_lang$core$Native_List.fromArray(
+									[])
+							},
+							_p12._0)));
+		}
+	});

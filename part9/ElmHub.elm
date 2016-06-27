@@ -79,7 +79,10 @@ view model =
 viewSearchResults : Dict ResultId SearchResult -> List (Html Msg)
 viewSearchResults results =
     -- TODO sort by star count and render
-    []
+    results
+        |> Dict.values
+        |> List.sortBy (\result -> result.stars)
+        |> List.map viewSearchResult
 
 
 viewSearchResult : SearchResult -> Html Msg
@@ -124,13 +127,18 @@ update msg model =
                 resultsById : Dict ResultId SearchResult
                 resultsById =
                     -- TODO convert results list into a Dict
-                    Dict.empty
+                    results
+                        |> List.map (\searchResult -> ( searchResult.id, searchResult ))
+                        |> Dict.fromList
             in
                 { model | results = resultsById } ! []
 
         DeleteById id ->
+             
+            { model | results = Dict.remove id model.results } ! []
+            
             -- TODO delete the result with the given id
-            model ! []
+        
 
         DoNothing ->
             model ! []
